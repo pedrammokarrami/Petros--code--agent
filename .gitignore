@@ -26,3 +26,5 @@ run_deep_benchmark_now.py
 run_master_fix.py
 solve_everything_permanently.py
 node_modules/
+release/
+Codgar-Ultimate-Core/release/

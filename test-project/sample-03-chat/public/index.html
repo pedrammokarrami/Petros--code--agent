@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html lang="fa"><head><meta charset="UTF-8"><title>Chat</title></head><body>
+<div id="login"><input id="username" placeholder="Username"><select id="room"><option value="public">Public</option><option value="programming">Programming</option><option value="design">Design</option></select><button id="enterBtn">Enter</button></div>
+<div id="chat" style="display:none;"><div id="onlineUsers"></div><div id="messages"></div><input id="typing" disabled><input id="messageInput" placeholder="Type a message"><button id="sendBtn">Send</button><button id="uploadBtn">Upload</button><input id="fileInput" type="file" style="display:none;"></div>
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script src="app.js"></script>
+<script src="upload.js"></script>
+</body></html>

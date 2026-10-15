@@ -1,0 +1,28 @@
+{
+  "activeProject": {
+    "id": "proj_1790972799153",
+    "name": "petros dns",
+    "path": "/Users/sarir/Desktop/petros codex/",
+    "gitRemote": "",
+    "gitProvider": "none",
+    "createdAt": "2026-10-02T20:26:39.153Z"
+  },
+  "projects": [
+    {
+      "id": "default",
+      "name": "Codgar-Final-1",
+      "path": "/Users/sarir/Desktop/yadow-codgar/Codgar-Final-1",
+      "gitRemote": "",
+      "gitProvider": "local",
+      "createdAt": "2026-10-02T18:29:28.961Z"
+    },
+    {
+      "id": "proj_1790972799153",
+      "name": "petros dns",
+      "path": "/Users/sarir/Desktop/petros codex/",
+      "gitRemote": "",
+      "gitProvider": "none",
+      "createdAt": "2026-10-02T20:26:39.153Z"
+    }
+  ]
+}

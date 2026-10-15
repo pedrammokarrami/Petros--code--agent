@@ -1,0 +1,78 @@
+name: Codgar CI (self-healing)
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    name: Lint → Test → Build → Security scan
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: TypeScript typecheck (tsc --noEmit)
+        run: npm run lint
+
+      - name: Integration + hygiene tests
+        run: npm test
+
+      - name: Unit tests (node)
+        run: node --test --test-concurrency=1 test-project/*.test.js test-project/test.js
+
+      - name: Production build
+        run: npm run build
+
+      - name: SAST scan of the workspace (fails on critical/high)
+        run: |
+          npx tsx -e "
+          import { scanTree, summarise } from './server/securityScanner';
+          const scan = scanTree(process.cwd(), 400);
+          const summary = summarise(scan.results);
+          console.log(JSON.stringify({ filesScanned: scan.filesScanned, totals: summary.totals }, null, 2));
+          if (!summary.passed) { console.error('SAST: critical/high findings present'); process.exit(1); }
+          "
+
+      - name: Upload build artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: codgar-dist
+          path: dist/
+          retention-days: 7
+
+  auto-fix:
+    name: Self-healing (open fix PR on failure)
+    needs: verify
+    if: failure() && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record the failing run for the agent loop
+        run: |
+          mkdir -p .codgar
+          echo "failed_run=${{ github.run_id }}" >> .codgar/last_failed_run
+          echo "workflow=${{ github.workflow }}" >> .codgar/last_failed_run
+      - name: Create repair branch + PR
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: codgar/self-heal
+          title: 'chore(auto): self-healing run ${{ github.run_id }}'
+          body: |
+            Automated self-healing branch created because the `verify` job failed.
+            The Codgar agent loop picks this branch up, reads the failing job log,
+            patches the source (AST-verified), and pushes back.
+          commit-message: 'chore(auto): record failing run ${{ github.run_id }}'

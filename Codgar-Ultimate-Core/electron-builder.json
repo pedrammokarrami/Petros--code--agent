@@ -1,0 +1,35 @@
+{
+  "appId": "com.codgar.ultimate",
+  "productName": "Codgar Ultimate",
+  "copyright": "© 2026 Codgar",
+  "directories": {
+    "output": "release",
+    "buildResources": "build"
+  },
+  "files": [
+    "dist/**/*",
+    "main.cjs",
+    "package.json"
+  ],
+  "asar": true,
+  "asarUnpack": [
+    "node_modules/esbuild/**",
+    "node_modules/@esbuild/**",
+    "node_modules/@xenova/**",
+    "node_modules/onnxruntime*/**"
+  ],
+  "npmRebuild": false,
+  "mac": {
+    "category": "public.app-category.developer-tools",
+    "target": ["dmg"],
+    "icon": "build/icon.png",
+    "identity": null,
+    "hardenedRuntime": false,
+    "gatekeeperAssess": false
+  },
+  "dmg": {
+    "title": "Codgar Ultimate",
+    "backgroundColor": "#0b1020",
+    "window": { "width": 540, "height": 380 }
+  }
+}

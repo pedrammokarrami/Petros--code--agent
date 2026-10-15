@@ -1,0 +1,27 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+
+# Generated Media & Local Artifacts
+public/generated/
+public/generated/*
+*.tmp.jpg
+*.tmp.png
+scripts/__pycache__/
+.env.local
+
+# Temporary backups & dumps
+*.backup_*
+*.bak_*
+*.bak*
+codgar_full_dump.txt
+deep_quality_comparison.html
+diagnose_root_cause.py
+run_deep_benchmark_now.py
+run_master_fix.py
+solve_everything_permanently.py

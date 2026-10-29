@@ -1,0 +1,10 @@
+import { chromium } from 'playwright';
+import { startServer, stopServer, BASE } from './lib/server.mjs';
+await startServer(); const b = await chromium.launch();
+const p = await b.newPage({ viewport: { width: 1280, height: 800 } });
+p.on('console', m => console.log('CONSOLE', m.type(), m.text().slice(0,300)));
+p.on('pageerror', e => console.log('PAGEERROR', e.message.slice(0,500)));
+await p.goto(`${BASE}/?verify=1&renderer=points&scene=app`, { waitUntil: 'domcontentloaded' });
+await p.waitForTimeout(6000);
+console.log('state', JSON.stringify(await p.evaluate(() => window.__sceneState || null)).slice(0,400));
+await b.close(); await stopServer();

@@ -1,0 +1,67 @@
+{
+  "defaultFocal": {
+    "xPct": 0.55,
+    "yPct": 0.22,
+    "wPct": 0.4,
+    "hPct": 0.56
+  },
+  "scenes": [
+    {
+      "id": "welcome",
+      "key": "welcome",
+      "label": "Welcome"
+    },
+    {
+      "id": "dev",
+      "key": "dev",
+      "label": "Dev Room",
+      "focal": {
+        "xPct": 0.34,
+        "yPct": 0.26,
+        "wPct": 0.46,
+        "hPct": 0.56
+      }
+    },
+    {
+      "id": "research",
+      "key": "research",
+      "label": "Research Room"
+    },
+    {
+      "id": "content",
+      "key": "content",
+      "label": "Content Room"
+    },
+    {
+      "id": "command",
+      "key": "command",
+      "label": "Command Room"
+    }
+  ],
+  "viewports": [
+    {
+      "name": "mobile-390x844",
+      "width": 390,
+      "height": 844,
+      "mobile": true
+    },
+    {
+      "name": "tablet-768x1024",
+      "width": 768,
+      "height": 1024,
+      "mobile": true
+    },
+    {
+      "name": "laptop-1440x900",
+      "width": 1440,
+      "height": 900,
+      "mobile": false
+    },
+    {
+      "name": "desktop-1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "mobile": false
+    }
+  ]
+}

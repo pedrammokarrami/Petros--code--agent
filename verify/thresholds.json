@@ -1,0 +1,95 @@
+{
+  "luma": {
+    "nearWhiteMaxPercent": 1.5,
+    "nearWhiteThreshold": 240,
+    "meanLumaMin": 4.0,
+    "meanLumaMax": 24.0,
+    "nonBgDelta": 10,
+    "nonBgMinPercent": 8.0,
+    "nonBgMaxPercent": 40.0
+  },
+  "amber": {
+    "hueMin": 30,
+    "hueMax": 45,
+    "satMin": 0.5,
+    "lumaMin": 40,
+    "maxPercentOfNonBg": 2.0,
+    "devRoomMinPercentOfNonBg": 0.2,
+    "nonDevRoomExact": 0.0
+  },
+  "blob": {
+    "minLitComponents": 500,
+    "maxLitAreaPercent": 15.0,
+    "litLuma": 50,
+    "cropScale": 2
+  },
+  "ui": {
+    "maxConsoleErrors": 0,
+    "maxConsoleWarnings": 0,
+    "maxFailedRequests": 0,
+    "allowHorizontalScroll": false,
+    "maxTextOverlaps": 0,
+    "minFontPxDesktop": 13,
+    "minFontPxMobile": 14,
+    "minTouchTargetPxMobile": 44,
+    "maxAxeSeriousCritical": 0
+  },
+  "composition": {
+    "minJaccardDistance": 0.3
+  },
+  "copy": {
+    "rooms": [
+      "welcome",
+      "dev",
+      "research",
+      "content",
+      "command"
+    ],
+    "viewports": [
+      "desktop-1920x1080",
+      "mobile-390x844"
+    ],
+    "patterns": [
+      {
+        "id": "pending-human-input",
+        "match": "PENDING_HUMAN_INPUT"
+      },
+      {
+        "id": "procedural-set",
+        "match": "procedural set"
+      },
+      {
+        "id": "asset-pending",
+        "match": "asset pending"
+      },
+      {
+        "id": "backdrop-pending",
+        "match": "backdrop pending"
+      },
+      {
+        "id": "research-provider",
+        "match": "RESEARCH_PROVIDER"
+      },
+      {
+        "id": "media-provider",
+        "match": "MEDIA_PROVIDER"
+      },
+      {
+        "id": "provider-assignment",
+        "match": "_PROVIDER="
+      },
+      {
+        "id": "roadmap-phase",
+        "match": [
+          "P5",
+          "P8"
+        ],
+        "wholeWord": true
+      },
+      {
+        "id": "lands-in-phase",
+        "match": "lands in P"
+      }
+    ]
+  }
+}

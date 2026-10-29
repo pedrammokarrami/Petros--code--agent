@@ -1,0 +1,13 @@
+import { chromium } from 'playwright';
+import { startServer, stopServer, BASE } from './lib/server.mjs';
+await startServer(); const b = await chromium.launch();
+const p = await b.newPage({ viewport: { width: 390, height: 844 } });
+await p.goto(`${BASE}/?verify=1&renderer=points`, { waitUntil: 'domcontentloaded' });
+await p.waitForFunction('typeof window.__setSpatialScene === "function"');
+await p.evaluate(() => window.__setSpatialScene('app'));
+await p.waitForFunction('window.__sceneReady === true', null, { timeout: 30000 }).catch(()=>{});
+await p.waitForTimeout(900);
+const st = await p.evaluate(() => window.__sceneState);
+console.log(JSON.stringify(st.instances.filter(i=>i.role==='hero'), null, 1));
+console.log(await p.evaluate(() => { const c = document.querySelector('canvas'); return {w:c.clientWidth,h:c.clientHeight}; }));
+await b.close(); await stopServer();

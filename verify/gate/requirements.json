@@ -1,0 +1,225 @@
+{
+  "schema": "petros-requirements/1",
+  "notes": "Every requirement maps to executable checks. A check that cannot run is BLOCKED, never PASS. severity=release blocks the gate; severity=tracked is reported and listed as an unresolved risk.",
+  "requirements": [
+    {
+      "id": "R-ROOM-01",
+      "title": "A business category selects its own room; an unknown key cannot escape to an arbitrary room",
+      "severity": "release",
+      "why": "Room selection is the product's core promise: the workspace is built from the business.",
+      "checks": [
+        {
+          "kind": "test-title",
+          "file": "tests/workspace-scene.test.mjs",
+          "title": "every kind the schema allows has a room"
+        },
+        {
+          "kind": "test-title",
+          "file": "tests/workspace-scene.test.mjs",
+          "title": "the same spec always opens the same room"
+        },
+        {
+          "kind": "test-title",
+          "file": "tests/workspace-scene.test.mjs",
+          "title": "an unknown kind cannot escape to an arbitrary room"
+        },
+        {
+          "kind": "test-title",
+          "file": "tests/workspace-scene.test.mjs",
+          "title": "different businesses get different environments, not one template"
+        }
+      ]
+    },
+    {
+      "id": "R-SPEC-02",
+      "title": "SceneSpec is zod-validated: coordinates/colours, duplicate ids and out-of-bounds panels are rejected",
+      "severity": "release",
+      "why": "The model decides WHAT, never coordinates. A permissive schema lets a hostile reply draw the product.",
+      "checks": [
+        {
+          "kind": "test-title",
+          "file": "tests/workspace-compose.test.mjs",
+          "title": "spec: a coordinate or colour anywhere is rejected, not dropped"
+        },
+        {
+          "kind": "test-title",
+          "file": "tests/workspace-compose.test.mjs",
+          "title": "spec: duplicate ids are a failure"
+        },
+        {
+          "kind": "test-title",
+          "file": "tests/workspace-compose.test.mjs",
+          "title": "spec: panel count bounds are enforced"
+        }
+      ]
+    },
+    {
+      "id": "R-FALLBACK-03",
+      "title": "Model failure modes (empty, malformed, timeout, error) fall back to a valid spec instead of failing",
+      "severity": "release",
+      "why": "A provider outage must degrade the workspace, not break it.",
+      "checks": [
+        {
+          "kind": "test-title",
+          "file": "tests/workspace-compose.test.mjs",
+          "title": "compose: no model configured falls back instead of failing"
+        },
+        {
+          "kind": "test-title",
+          "file": "tests/workspace-compose.test.mjs",
+          "title": "compose: non-JSON, bad schema and model failure all fall back"
+        },
+        {
+          "kind": "test-title",
+          "file": "tests/workspace-compose.test.mjs",
+          "title": "compose: a model timeout falls back within the budget"
+        },
+        {
+          "kind": "test-title",
+          "file": "tests/workspace-compose.test.mjs",
+          "title": "compose: a valid model answer is used as-is"
+        }
+      ]
+    },
+    {
+      "id": "R-LIVE-04",
+      "title": "Model-generated room selection verified against a real provider",
+      "severity": "tracked",
+      "why": "Compose tests use a fake provider. Without credentials the product's live path is unproven.",
+      "checks": [
+        {
+          "kind": "manual",
+          "justification": "No provider key is present in .env and Pollinations answers 402. Every accepted proof so far is the fallback path. This is reported as an unresolved risk, not a pass."
+        }
+      ]
+    },
+    {
+      "id": "R-SCENE-05",
+      "title": "Scene contracts hold: deterministic procedural set, dptscn parses, corrupt magic rejected",
+      "severity": "release",
+      "why": "The backdrop is generated code; a silent non-determinism breaks every visual gate downstream.",
+      "checks": [
+        {
+          "kind": "test-title",
+          "file": "tests/office-camera-fit.test.mjs",
+          "title": "procedural set: every room produces a deterministic cloud in metres"
+        },
+        {
+          "kind": "test-title",
+          "file": "tests/office-engine.test.mjs",
+          "title": "dptscn: every built scene parses with consistent lengths"
+        },
+        {
+          "kind": "test-title",
+          "file": "tests/office-engine.test.mjs",
+          "title": "dptscn: a corrupt magic is rejected, not half-parsed"
+        }
+      ]
+    },
+    {
+      "id": "R-COPY-06",
+      "title": "Engineering provenance never reaches the product surface",
+      "severity": "release",
+      "why": "Roadmap words on screen are a product leak, and were fixed once already.",
+      "checks": [
+        {
+          "kind": "test-file",
+          "file": "tests/forbidden-copy.test.mjs"
+        },
+        {
+          "kind": "test-title",
+          "file": "tests/rtl-typography.test.mjs",
+          "title": "the welcome heading collapses to zero tracking only under RTL or Persian"
+        }
+      ]
+    },
+    {
+      "id": "R-SEC-07",
+      "title": "Authorization boundaries and data isolation hold on the server",
+      "severity": "release",
+      "why": "The office serves more than one business; a leak between them is a trust failure.",
+      "checks": [
+        {
+          "kind": "test-file",
+          "file": "tests/api.test.mjs"
+        },
+        {
+          "kind": "test-file",
+          "file": "tests/startup-data-isolation.test.mjs"
+        },
+        {
+          "kind": "step",
+          "step": "sast"
+        }
+      ]
+    },
+    {
+      "id": "R-BUILD-08",
+      "title": "A production build produces both artifacts, freshly, from this commit",
+      "severity": "release",
+      "why": "The gate runs the build script declared in the judged commit, then hashes both artifacts and requires them to be newer than this run.",
+      "checks": [
+        {
+          "kind": "step",
+          "step": "build"
+        },
+        {
+          "kind": "artifact",
+          "path": "dist/index.html"
+        },
+        {
+          "kind": "artifact",
+          "path": "dist/server.cjs"
+        }
+      ]
+    },
+    {
+      "id": "R-ART-09",
+      "title": "Look-lock art gates pass on frames rendered from this commit",
+      "severity": "release",
+      "why": "The look is the product. A green unit suite says nothing about it.",
+      "checks": [
+        {
+          "kind": "visual-report",
+          "rows": [
+            "near-white %",
+            "mean luma",
+            "non-bg %",
+            "amber % of non-bg",
+            "lit components (2x crop)",
+            "largest component %"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "R-RESP-10",
+      "title": "Responsive layout: no overflow, no text overlap, no under-size fonts or touch targets",
+      "severity": "release",
+      "why": "The office is used on phones; layout failures are invisible to unit tests.",
+      "checks": [
+        {
+          "kind": "visual-report",
+          "rows": [
+            "horizontal scroll",
+            "text overlaps",
+            "small fonts",
+            "small touch targets"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "R-REL-12",
+      "title": "The release records check passes at the commit under judgement",
+      "severity": "release",
+      "why": "verify/release-check.mjs is a step the gate runs. While no requirement named it, its exit code was printed in the step line and ignored by the verdict, so a broken release record could ship behind a PASS.",
+      "checks": [
+        {
+          "kind": "step",
+          "step": "release"
+        }
+      ]
+    }
+  ]
+}

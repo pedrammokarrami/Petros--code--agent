@@ -1,0 +1,1053 @@
+{
+  "generatedAt": "2026-10-18T22:47:01.863Z",
+  "counts": {
+    "srcFiles": 144,
+    "srcLines": 40444,
+    "components": 59,
+    "componentLines": 21341,
+    "routes": 99,
+    "sseEvents": 18,
+    "envVars": 21,
+    "storageKeys": 5
+  },
+  "components": [
+    {
+      "file": "src/components/AgentActivityBadge.tsx",
+      "name": "AgentActivityBadge.tsx",
+      "lines": 152,
+      "exports": [
+        "AgentActivityBadge"
+      ]
+    },
+    {
+      "file": "src/components/AnimatedCodeDrawer.tsx",
+      "name": "AnimatedCodeDrawer.tsx",
+      "lines": 237,
+      "exports": [
+        "AnimatedCodeDrawer"
+      ]
+    },
+    {
+      "file": "src/components/AnimatedUserEmailDropdown.tsx",
+      "name": "AnimatedUserEmailDropdown.tsx",
+      "lines": 277,
+      "exports": [
+        "AnimatedUserEmailDropdown"
+      ]
+    },
+    {
+      "file": "src/components/AudioVidoUniversalStudio.tsx",
+      "name": "AudioVidoUniversalStudio.tsx",
+      "lines": 194,
+      "exports": [
+        "AudioVidoUniversalStudio"
+      ]
+    },
+    {
+      "file": "src/components/AutonomousStartupModal.tsx",
+      "name": "AutonomousStartupModal.tsx",
+      "lines": 303,
+      "exports": [
+        "AutonomousStartupModal"
+      ]
+    },
+    {
+      "file": "src/components/BillingModal.tsx",
+      "name": "BillingModal.tsx",
+      "lines": 512,
+      "exports": [
+        "BillingModal"
+      ]
+    },
+    {
+      "file": "src/components/CodedAiChatCard.tsx",
+      "name": "CodedAiChatCard.tsx",
+      "lines": 1092,
+      "exports": [
+        "CodedAiChatCard"
+      ]
+    },
+    {
+      "file": "src/components/CodgarLogo.tsx",
+      "name": "CodgarLogo.tsx",
+      "lines": 56,
+      "exports": [
+        "CodgarLogo"
+      ]
+    },
+    {
+      "file": "src/components/CodgarSecondaryWorkspace.tsx",
+      "name": "CodgarSecondaryWorkspace.tsx",
+      "lines": 4,
+      "exports": []
+    },
+    {
+      "file": "src/components/Composer.tsx",
+      "name": "Composer.tsx",
+      "lines": 352,
+      "exports": [
+        "Composer"
+      ]
+    },
+    {
+      "file": "src/components/CosmicAvatarModal.tsx",
+      "name": "CosmicAvatarModal.tsx",
+      "lines": 115,
+      "exports": [
+        "CosmicAvatarModal"
+      ]
+    },
+    {
+      "file": "src/components/CosmicOrbitalHackerCanvas.tsx",
+      "name": "CosmicOrbitalHackerCanvas.tsx",
+      "lines": 746,
+      "exports": [
+        "CosmicOrbitalHackerCanvas"
+      ]
+    },
+    {
+      "file": "src/components/DeveloperRoomCanvas.tsx",
+      "name": "DeveloperRoomCanvas.tsx",
+      "lines": 404,
+      "exports": [
+        "DeveloperRoomCanvas"
+      ]
+    },
+    {
+      "file": "src/components/DiffViewerModal.tsx",
+      "name": "DiffViewerModal.tsx",
+      "lines": 281,
+      "exports": [
+        "DiffViewerModal"
+      ]
+    },
+    {
+      "file": "src/components/ErrorBoundary.tsx",
+      "name": "ErrorBoundary.tsx",
+      "lines": 40,
+      "exports": [
+        "ErrorBoundary"
+      ]
+    },
+    {
+      "file": "src/components/FileExplorer.tsx",
+      "name": "FileExplorer.tsx",
+      "lines": 417,
+      "exports": [
+        "FileExplorer"
+      ]
+    },
+    {
+      "file": "src/components/FreebuffQueueDrawer.tsx",
+      "name": "FreebuffQueueDrawer.tsx",
+      "lines": 422,
+      "exports": [
+        "FreebuffQueueDrawer"
+      ]
+    },
+    {
+      "file": "src/components/FreebuffWorkspacesModal.tsx",
+      "name": "FreebuffWorkspacesModal.tsx",
+      "lines": 282,
+      "exports": [
+        "FreebuffWorkspacesModal"
+      ]
+    },
+    {
+      "file": "src/components/FuelApiKeyView.tsx",
+      "name": "FuelApiKeyView.tsx",
+      "lines": 956,
+      "exports": [
+        "FuelApiKeyView"
+      ]
+    },
+    {
+      "file": "src/components/FuturisticLiveCodeHUD.tsx",
+      "name": "FuturisticLiveCodeHUD.tsx",
+      "lines": 369,
+      "exports": [
+        "AutonomousCodeAgent",
+        "FuturisticLiveCodeHUD"
+      ]
+    },
+    {
+      "file": "src/components/HolographicHudPanels.tsx",
+      "name": "HolographicHudPanels.tsx",
+      "lines": 126,
+      "exports": [
+        "HolographicHudPanels"
+      ]
+    },
+    {
+      "file": "src/components/HolographicPolyhedron.tsx",
+      "name": "HolographicPolyhedron.tsx",
+      "lines": 224,
+      "exports": [
+        "HolographicPolyhedron"
+      ]
+    },
+    {
+      "file": "src/components/ImageMessageRenderer.tsx",
+      "name": "ImageMessageRenderer.tsx",
+      "lines": 130,
+      "exports": [
+        "ImageMessageRenderer"
+      ]
+    },
+    {
+      "file": "src/components/LanguageSelectorModal.tsx",
+      "name": "LanguageSelectorModal.tsx",
+      "lines": 170,
+      "exports": [
+        "LanguageSelectorModal"
+      ]
+    },
+    {
+      "file": "src/components/LiquidGlassBackground.tsx",
+      "name": "LiquidGlassBackground.tsx",
+      "lines": 287,
+      "exports": [
+        "LiquidGlassBackground"
+      ]
+    },
+    {
+      "file": "src/components/LiveArtifactPreview.tsx",
+      "name": "LiveArtifactPreview.tsx",
+      "lines": 51,
+      "exports": [
+        "LiveArtifactPreview"
+      ]
+    },
+    {
+      "file": "src/components/LiveCharacterAvatar.tsx",
+      "name": "LiveCharacterAvatar.tsx",
+      "lines": 285,
+      "exports": [
+        "LiveCharacterAvatar"
+      ]
+    },
+    {
+      "file": "src/components/LiveCodeExecutionVisualizer.tsx",
+      "name": "LiveCodeExecutionVisualizer.tsx",
+      "lines": 474,
+      "exports": [
+        "useCosmicHaloEngine",
+        "LiveCodeExecutionVisualizer"
+      ]
+    },
+    {
+      "file": "src/components/LiveEmailViewerModal.tsx",
+      "name": "LiveEmailViewerModal.tsx",
+      "lines": 603,
+      "exports": [
+        "LiveEmailViewerModal"
+      ]
+    },
+    {
+      "file": "src/components/LocalBridgeModal.tsx",
+      "name": "LocalBridgeModal.tsx",
+      "lines": 337,
+      "exports": [
+        "LocalBridgeModal"
+      ]
+    },
+    {
+      "file": "src/components/McpConnectorsModal.tsx",
+      "name": "McpConnectorsModal.tsx",
+      "lines": 287,
+      "exports": [
+        "McpConnectorsModal"
+      ]
+    },
+    {
+      "file": "src/components/McpModal.tsx",
+      "name": "McpModal.tsx",
+      "lines": 339,
+      "exports": [
+        "YodawMenuDrawer",
+        "McpModal"
+      ]
+    },
+    {
+      "file": "src/components/McpWebViewModal.tsx",
+      "name": "McpWebViewModal.tsx",
+      "lines": 304,
+      "exports": [
+        "McpWebViewModal"
+      ]
+    },
+    {
+      "file": "src/components/MediaStudioDrawer.tsx",
+      "name": "MediaStudioDrawer.tsx",
+      "lines": 155,
+      "exports": [
+        "MediaStudioDrawer"
+      ]
+    },
+    {
+      "file": "src/components/MessageItem.tsx",
+      "name": "MessageItem.tsx",
+      "lines": 326,
+      "exports": [
+        "MessageItem"
+      ]
+    },
+    {
+      "file": "src/components/MinimalComposer.tsx",
+      "name": "MinimalComposer.tsx",
+      "lines": 262,
+      "exports": [
+        "MinimalComposer"
+      ]
+    },
+    {
+      "file": "src/components/MrRobotCanvas.tsx",
+      "name": "MrRobotCanvas.tsx",
+      "lines": 230,
+      "exports": [
+        "MrRobotCanvas"
+      ]
+    },
+    {
+      "file": "src/components/MrRobotLiveCharacter.tsx",
+      "name": "MrRobotLiveCharacter.tsx",
+      "lines": 106,
+      "exports": [
+        "MrRobotLiveCharacter"
+      ]
+    },
+    {
+      "file": "src/components/PaymentGatewayModal.tsx",
+      "name": "PaymentGatewayModal.tsx",
+      "lines": 1075,
+      "exports": [
+        "PaymentGatewayModal"
+      ]
+    },
+    {
+      "file": "src/components/PreviewModal.tsx",
+      "name": "PreviewModal.tsx",
+      "lines": 295,
+      "exports": [
+        "PreviewModal"
+      ]
+    },
+    {
+      "file": "src/components/ProfileModal.tsx",
+      "name": "ProfileModal.tsx",
+      "lines": 771,
+      "exports": [
+        "ProfileModal"
+      ]
+    },
+    {
+      "file": "src/components/ProjectSelector.tsx",
+      "name": "ProjectSelector.tsx",
+      "lines": 116,
+      "exports": [
+        "ProjectSelector"
+      ]
+    },
+    {
+      "file": "src/components/ProjectTimelineDrawer.tsx",
+      "name": "ProjectTimelineDrawer.tsx",
+      "lines": 334,
+      "exports": [
+        "defaultPhases",
+        "ProjectTimelineDrawer"
+      ]
+    },
+    {
+      "file": "src/components/RadialArcMenu.tsx",
+      "name": "RadialArcMenu.tsx",
+      "lines": 401,
+      "exports": [
+        "RadialArcMenu"
+      ]
+    },
+    {
+      "file": "src/components/SettingsModal.tsx",
+      "name": "SettingsModal.tsx",
+      "lines": 167,
+      "exports": [
+        "SettingsModal"
+      ]
+    },
+    {
+      "file": "src/components/Sidebar.tsx",
+      "name": "Sidebar.tsx",
+      "lines": 274,
+      "exports": [
+        "Sidebar"
+      ]
+    },
+    {
+      "file": "src/components/SiriChatDrawer.tsx",
+      "name": "SiriChatDrawer.tsx",
+      "lines": 190,
+      "exports": [
+        "SiriChatDrawer"
+      ]
+    },
+    {
+      "file": "src/components/SiriLiveSpeakerOverlay.tsx",
+      "name": "SiriLiveSpeakerOverlay.tsx",
+      "lines": 306,
+      "exports": [
+        "SiriLiveSpeakerOverlay"
+      ]
+    },
+    {
+      "file": "src/components/SiriMiniBottomDock.tsx",
+      "name": "SiriMiniBottomDock.tsx",
+      "lines": 129,
+      "exports": [
+        "SiriMiniBottomDock"
+      ]
+    },
+    {
+      "file": "src/components/SiriMotionControlsModal.tsx",
+      "name": "SiriMotionControlsModal.tsx",
+      "lines": 280,
+      "exports": [
+        "SiriMotionControlsModal"
+      ]
+    },
+    {
+      "file": "src/components/SiriVisualMotionEngine.tsx",
+      "name": "SiriVisualMotionEngine.tsx",
+      "lines": 633,
+      "exports": [
+        "SiriVisualMotionEngine"
+      ]
+    },
+    {
+      "file": "src/components/SkillsModal.tsx",
+      "name": "SkillsModal.tsx",
+      "lines": 844,
+      "exports": [
+        "SkillsModal"
+      ]
+    },
+    {
+      "file": "src/components/SoundtrackBar.tsx",
+      "name": "SoundtrackBar.tsx",
+      "lines": 92,
+      "exports": [
+        "SoundtrackBar"
+      ]
+    },
+    {
+      "file": "src/components/SpinningEarthGlobe.tsx",
+      "name": "SpinningEarthGlobe.tsx",
+      "lines": 240,
+      "exports": [
+        "SpinningEarthGlobe"
+      ]
+    },
+    {
+      "file": "src/components/StatusBar.tsx",
+      "name": "StatusBar.tsx",
+      "lines": 144,
+      "exports": [
+        "StatusBar"
+      ]
+    },
+    {
+      "file": "src/components/TerminalPanel.tsx",
+      "name": "TerminalPanel.tsx",
+      "lines": 609,
+      "exports": [
+        "TerminalPanel"
+      ]
+    },
+    {
+      "file": "src/components/YodawBrandMark.tsx",
+      "name": "YodawBrandMark.tsx",
+      "lines": 45,
+      "exports": [
+        "YodawBrandMark"
+      ]
+    },
+    {
+      "file": "src/components/YodawMenuDrawer.tsx",
+      "name": "YodawMenuDrawer.tsx",
+      "lines": 339,
+      "exports": [
+        "YodawMenuDrawer",
+        "McpModal"
+      ]
+    },
+    {
+      "file": "src/components/YodawWorkspace.tsx",
+      "name": "YodawWorkspace.tsx",
+      "lines": 2150,
+      "exports": [
+        "processUserPrompt",
+        "YodawWorkspace"
+      ]
+    }
+  ],
+  "modals": [
+    {
+      "file": "src/components/AnimatedCodeDrawer.tsx",
+      "lines": 237
+    },
+    {
+      "file": "src/components/AutonomousStartupModal.tsx",
+      "lines": 303
+    },
+    {
+      "file": "src/components/BillingModal.tsx",
+      "lines": 512
+    },
+    {
+      "file": "src/components/CosmicAvatarModal.tsx",
+      "lines": 115
+    },
+    {
+      "file": "src/components/DiffViewerModal.tsx",
+      "lines": 281
+    },
+    {
+      "file": "src/components/FreebuffQueueDrawer.tsx",
+      "lines": 422
+    },
+    {
+      "file": "src/components/FreebuffWorkspacesModal.tsx",
+      "lines": 282
+    },
+    {
+      "file": "src/components/HolographicHudPanels.tsx",
+      "lines": 126
+    },
+    {
+      "file": "src/components/LanguageSelectorModal.tsx",
+      "lines": 170
+    },
+    {
+      "file": "src/components/LiveEmailViewerModal.tsx",
+      "lines": 603
+    },
+    {
+      "file": "src/components/LocalBridgeModal.tsx",
+      "lines": 337
+    },
+    {
+      "file": "src/components/McpConnectorsModal.tsx",
+      "lines": 287
+    },
+    {
+      "file": "src/components/McpModal.tsx",
+      "lines": 339
+    },
+    {
+      "file": "src/components/McpWebViewModal.tsx",
+      "lines": 304
+    },
+    {
+      "file": "src/components/MediaStudioDrawer.tsx",
+      "lines": 155
+    },
+    {
+      "file": "src/components/PaymentGatewayModal.tsx",
+      "lines": 1075
+    },
+    {
+      "file": "src/components/PreviewModal.tsx",
+      "lines": 295
+    },
+    {
+      "file": "src/components/ProfileModal.tsx",
+      "lines": 771
+    },
+    {
+      "file": "src/components/ProjectTimelineDrawer.tsx",
+      "lines": 334
+    },
+    {
+      "file": "src/components/SettingsModal.tsx",
+      "lines": 167
+    },
+    {
+      "file": "src/components/SiriChatDrawer.tsx",
+      "lines": 190
+    },
+    {
+      "file": "src/components/SiriLiveSpeakerOverlay.tsx",
+      "lines": 306
+    },
+    {
+      "file": "src/components/SiriMotionControlsModal.tsx",
+      "lines": 280
+    },
+    {
+      "file": "src/components/SkillsModal.tsx",
+      "lines": 844
+    },
+    {
+      "file": "src/components/TerminalPanel.tsx",
+      "lines": 609
+    },
+    {
+      "file": "src/components/YodawMenuDrawer.tsx",
+      "lines": 339
+    }
+  ],
+  "routes": [
+    {
+      "method": "POST",
+      "path": "/api/security/scan"
+    },
+    {
+      "method": "POST",
+      "path": "/api/patch/apply"
+    },
+    {
+      "method": "POST",
+      "path": "/api/index/build"
+    },
+    {
+      "method": "POST",
+      "path": "/api/index/search"
+    },
+    {
+      "method": "POST",
+      "path": "/api/sandbox/compile"
+    },
+    {
+      "method": "GET",
+      "path": "/api/health"
+    },
+    {
+      "method": "GET",
+      "path": "/api/keys/status"
+    },
+    {
+      "method": "GET",
+      "path": "/api/local-bridge/status"
+    },
+    {
+      "method": "POST",
+      "path": "/api/local-bridge/connect"
+    },
+    {
+      "method": "POST",
+      "path": "/api/local-bridge/execute"
+    },
+    {
+      "method": "POST",
+      "path": "/api/local-bridge/organize-desktop"
+    },
+    {
+      "method": "GET",
+      "path": "/api/mcp/registries"
+    },
+    {
+      "method": "POST",
+      "path": "/api/mcp/provision"
+    },
+    {
+      "method": "GET",
+      "path": "/api/skills/standards/test"
+    },
+    {
+      "method": "POST",
+      "path": "/api/keys/rotate"
+    },
+    {
+      "method": "POST",
+      "path": "/api/keys/add"
+    },
+    {
+      "method": "GET",
+      "path": "/api/project/info"
+    },
+    {
+      "method": "GET",
+      "path": "/api/fs/tree"
+    },
+    {
+      "method": "POST",
+      "path": "/api/fs/read"
+    },
+    {
+      "method": "POST",
+      "path": "/api/fs/write"
+    },
+    {
+      "method": "POST",
+      "path": "/api/fs/search"
+    },
+    {
+      "method": "POST",
+      "path": "/api/terminal/cancel"
+    },
+    {
+      "method": "GET",
+      "path": "/api/code/history"
+    },
+    {
+      "method": "POST",
+      "path": "/api/code/history/clear"
+    },
+    {
+      "method": "POST",
+      "path": "/api/code/record"
+    },
+    {
+      "method": "GET",
+      "path": "/api/git/status"
+    },
+    {
+      "method": "GET",
+      "path": "/api/git/diff"
+    },
+    {
+      "method": "GET",
+      "path": "/api/git/log"
+    },
+    {
+      "method": "POST",
+      "path": "/api/git/commit"
+    },
+    {
+      "method": "GET",
+      "path": "/api/memory"
+    },
+    {
+      "method": "POST",
+      "path": "/api/memory"
+    },
+    {
+      "method": "GET",
+      "path": "/api/media/proxy"
+    },
+    {
+      "method": "GET",
+      "path": "/api/images/:id"
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/prompt"
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/chat"
+    },
+    {
+      "method": "POST",
+      "path": "/api/prompt"
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat"
+    },
+    {
+      "method": "GET",
+      "path": "/api/router/topology"
+    },
+    {
+      "method": "GET",
+      "path": "/api/router/models"
+    },
+    {
+      "method": "POST",
+      "path": "/api/router/select-model"
+    },
+    {
+      "method": "POST",
+      "path": "/api/router/install-package"
+    },
+    {
+      "method": "POST",
+      "path": "/api/router/comprehensive-test"
+    },
+    {
+      "method": "GET",
+      "path": "/api/claude/status"
+    },
+    {
+      "method": "POST",
+      "path": "/api/claude/terminal"
+    },
+    {
+      "method": "POST",
+      "path": "/api/claude/key"
+    },
+    {
+      "method": "GET",
+      "path": "/api/routers/book"
+    },
+    {
+      "method": "POST",
+      "path": "/api/routers/select"
+    },
+    {
+      "method": "GET",
+      "path": "/api/routers/active"
+    },
+    {
+      "method": "GET",
+      "path": "/api/pool/metrics"
+    },
+    {
+      "method": "POST",
+      "path": "/api/pool/cascade"
+    },
+    {
+      "method": "POST",
+      "path": "/api/pool/restart"
+    },
+    {
+      "method": "GET",
+      "path": "/api/keys/list"
+    },
+    {
+      "method": "POST",
+      "path": "/api/keys/generate"
+    },
+    {
+      "method": "POST",
+      "path": "/api/keys/verify-pin"
+    },
+    {
+      "method": "POST",
+      "path": "/api/pool/test-infinite"
+    },
+    {
+      "method": "GET",
+      "path": "/api/compiler/tools"
+    },
+    {
+      "method": "POST",
+      "path": "/api/compiler/auto-install-config"
+    },
+    {
+      "method": "POST",
+      "path": "/api/compiler/install-tool"
+    },
+    {
+      "method": "POST",
+      "path": "/api/compiler/build-react"
+    },
+    {
+      "method": "POST",
+      "path": "/api/compiler/build-universal"
+    },
+    {
+      "method": "GET",
+      "path": "/api/compiler/languages"
+    },
+    {
+      "method": "POST",
+      "path": "/api/compiler/execute"
+    },
+    {
+      "method": "GET",
+      "path": "/api/fuel/status"
+    },
+    {
+      "method": "POST",
+      "path": "/api/fuel/claim"
+    },
+    {
+      "method": "POST",
+      "path": "/api/fuel/boost"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tasks"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tasks"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tasks/:id"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tasks/:id/cancel"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tasks/:id/events"
+    },
+    {
+      "method": "GET",
+      "path": "/api/projects"
+    },
+    {
+      "method": "POST",
+      "path": "/api/projects/switch"
+    },
+    {
+      "method": "POST",
+      "path": "/api/projects/create-test"
+    },
+    {
+      "method": "POST",
+      "path": "/api/projects/select"
+    },
+    {
+      "method": "POST",
+      "path": "/api/projects/create"
+    },
+    {
+      "method": "GET",
+      "path": "/api/filesystem/quick-paths"
+    },
+    {
+      "method": "GET",
+      "path": "/api/filesystem/list-dir"
+    },
+    {
+      "method": "GET",
+      "path": "/api/filesystem/browse-folder"
+    },
+    {
+      "method": "POST",
+      "path": "/api/transcribe"
+    },
+    {
+      "method": "POST",
+      "path": "/api/voice/transcribe"
+    },
+    {
+      "method": "POST",
+      "path": "/api/files/content"
+    },
+    {
+      "method": "POST",
+      "path": "/api/project/timeline/execute"
+    },
+    {
+      "method": "POST",
+      "path": "/api/project/timeline/decompose"
+    },
+    {
+      "method": "POST",
+      "path": "/api/translate/messages"
+    },
+    {
+      "method": "POST",
+      "path": "/api/connectors/gmail/send-test"
+    },
+    {
+      "method": "GET",
+      "path": "/api/connectors/gmail/emails"
+    },
+    {
+      "method": "GET",
+      "path": "/api/connectors/gmail/latest"
+    },
+    {
+      "method": "POST",
+      "path": "/api/connectors/mcp/execute"
+    },
+    {
+      "method": "POST",
+      "path": "/api/connectors/test-all"
+    },
+    {
+      "method": "GET",
+      "path": "/api/startup/list"
+    },
+    {
+      "method": "GET",
+      "path": "/api/startup/:id"
+    },
+    {
+      "method": "POST",
+      "path": "/api/startup/scrape-competitors"
+    },
+    {
+      "method": "POST",
+      "path": "/api/ai-director/compose"
+    },
+    {
+      "method": "POST",
+      "path": "/api/scene/direct"
+    },
+    {
+      "method": "POST",
+      "path": "/api/startup/autonomous-create"
+    },
+    {
+      "method": "POST",
+      "path": "/api/payment/request"
+    },
+    {
+      "method": "POST",
+      "path": "/api/payment/verify"
+    },
+    {
+      "method": "POST",
+      "path": "/api/self-heal/compile"
+    },
+    {
+      "method": "GET",
+      "path": "*"
+    }
+  ],
+  "sse": [
+    "task.created",
+    "task.started",
+    "agent.thinking",
+    "agent.planning",
+    "worker.started",
+    "worker.completed",
+    "tool.started",
+    "tool.completed",
+    "file.changed",
+    "command.started",
+    "command.output",
+    "command.completed",
+    "test.started",
+    "test.completed",
+    "approval.required",
+    "task.completed",
+    "task.failed",
+    "task.cancelled"
+  ],
+  "env": [
+    "ADMIN_TOKEN",
+    "ANTHROPIC_API_KEY",
+    "BIND_HOST",
+    "CLAUDE_API_KEY",
+    "CODGAR_AUTOSTART_ROUTERS",
+    "CODGAR_LANG",
+    "CODGAR_STATIC_DIR",
+    "CODGAR_STRICT_EXEC_TOKEN",
+    "GEMINI_API_KEY",
+    "GITHUB_TOKEN",
+    "GMAIL_REFRESH_TOKEN",
+    "GMAIL_USER",
+    "IDPAY_API_KEY",
+    "IDPAY_SANDBOX",
+    "NINEROUTER_API_KEY",
+    "OMNIROUTE_API_KEY",
+    "PATH",
+    "PORT",
+    "ROUTER_API_KEY",
+    "ZARINPAL_MERCHANT_ID",
+    "ZARINPAL_SANDBOX"
+  ],
+  "storage": [
+    "codgar_crypto_merchant_key",
+    "codgar_crypto_payout_wallet",
+    "codgar_lang",
+    "yodaw_chat_sessions",
+    "yodaw_media_archive"
+  ],
+  "langs": [
+    "en",
+    "fa",
+    "es",
+    "fr",
+    "ru",
+    "zh"
+  ]
+}

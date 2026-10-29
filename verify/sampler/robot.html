@@ -1,0 +1,357 @@
+<!doctype html><meta charset="utf-8"><title>robot character sampler</title>
+<script type="importmap">
+{ "imports": {
+  "three": "/node_modules/three/build/three.module.js",
+  "three/addons/": "/node_modules/three/examples/jsm/"
+} }
+</script>
+<script type="module">
+// Offline: a rigged GLB becomes (a) rest-pose points in BIND SPACE with per-point
+// skinIndex / skinWeight and (b) the skeleton chain plus the clips that drive it.
+//
+// Two contracts the runtime relies on, so both are established here:
+//   1. Points live in the model's own bind space (the glTF scene's world space at the
+//      bind pose). Every point names the chain nodes that move it, so the GPU can
+//      rebuild the pose without the GLB.
+//   2. The exported chain reproduces bone.matrixWorld exactly, so the exported
+//      inverse bind matrices stay valid when the runtime rebuilds the rig.
+//
+// MeshSurfaceSampler is used for the area-weighted face choice (its build() writes a
+// cumulative area distribution). The barycentric coordinates are computed here rather
+// than recovered from the sampled point, because MeshSurfaceSampler._sampleFace does not
+// hand back the (u,v) it used.
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshSurfaceSampler } from 'three/addons/math/MeshSurfaceSampler.js';
+
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+const cache = new Map();
+async function load(url) {
+  if (!cache.has(url)) cache.set(url, await new GLTFLoader().loadAsync(url));
+  return cache.get(url);
+}
+
+/** Per-glTF-mesh sampling weight. The art direction wants dense heads and hands. */
+const DENSITY_BOOST = new Map([[2, 3.0], [12, 3.0], [13, 3.0]]);
+
+window.__samplerReady = true;
+
+window.sampleRobot = async ({ glbUrl, count, seed, clipNames, edgeShare = 0.3 }) => {
+  const rnd = mulberry32((seed >>> 0) || 4242);
+  const gltf = await load(glbUrl);
+  gltf.scene.updateMatrixWorld(true);
+
+  // ---- the rig ------------------------------------------------------------
+  const skinned = [];
+  const meshes = [];
+  gltf.scene.traverse((o) => {
+    if (o.isMesh) meshes.push(o);
+    if (o.isSkinnedMesh) skinned.push(o);
+  });
+  if (!skinned.length) throw new Error('no skinned mesh in ' + glbUrl);
+  const skeleton = skinned[0].skeleton;
+
+  // three.js names are unique after GLTFLoader.createUniqueName, so a clip track
+  // ("<nodeName>.<property>") resolves back to the object it animates.
+  const byName = new Map();
+  gltf.scene.traverse((o) => { if (o.name && !byName.has(o.name)) byName.set(o.name, o); });
+
+  // An animated node that is not a joint still moves the surface: the head mesh node
+  // carries the head's own rotation, and every clip animates it. Such a node becomes
+  // a bone of its own, otherwise the head would never tilt.
+  const animated = new Set();
+  for (const clip of gltf.animations) {
+    for (const tr of clip.tracks) {
+      const dot = tr.name.lastIndexOf('.');
+      if (dot < 0) continue;
+      const prop = tr.name.slice(dot + 1);
+      if (prop === 'morphTargetInfluences') continue; // morph targets are not rendered
+      const obj = byName.get(tr.name.slice(0, dot));
+      if (obj) animated.add(obj);
+    }
+  }
+
+  // The chain: every bone, plus the ancestors it needs to sit where it sat at bind.
+  const chain = [];
+  const chainIndex = new Map();
+  const push = (obj) => {
+    if (!obj || obj === gltf.scene || chainIndex.has(obj)) return;
+    push(obj.parent);
+    chainIndex.set(obj, chain.length);
+    chain.push(obj);
+  };
+  for (const b of skeleton.bones) push(b);
+  for (const o of animated) push(o);
+
+  // Canonical bones: the chain nodes that actually carry points. Everything else in
+  // the chain (the glTF scene root, the armature node) only positions the bones.
+  const boneChain = [];
+  for (let i = 0; i < chain.length; i++) {
+    const o = chain[i];
+    if (skeleton.bones.includes(o) || animated.has(o)) boneChain.push(i);
+  }
+  const boneSet = new Set(boneChain);
+
+  // ---- the surface --------------------------------------------------------
+  const P = [], N = [], D = [], SI = [], SW = [];
+  const jointChainIndex = skeleton.bones.map((b) => chainIndex.get(b));
+
+  // Area per mesh, so the budget follows the surface instead of the triangle count.
+  const areas = meshes.map((mesh) => {
+    const pos = mesh.geometry.attributes.position;
+    const idx = mesh.geometry.index;
+    const tri = idx ? idx.count / 3 : pos.count / 3;
+    const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3();
+    let sum = 0;
+    for (let t = 0; t < tri; t++) {
+      const i0 = idx ? idx.getX(t * 3) : t * 3;
+      const i1 = idx ? idx.getX(t * 3 + 1) : t * 3 + 1;
+      const i2 = idx ? idx.getX(t * 3 + 2) : t * 3 + 2;
+      a.fromBufferAttribute(pos, i0); b.fromBufferAttribute(pos, i1); c.fromBufferAttribute(pos, i2);
+      sum += a.distanceTo(b) * a.distanceTo(c) * 0.5;
+    }
+    return sum;
+  });
+  const weights = meshes.map((mesh, i) => {
+    const gi = gltf.parser.associations.get(mesh);
+    const boost = gi && gi.meshes !== undefined ? (DENSITY_BOOST.get(gi.meshes) || 1) : 1;
+    return Math.max(1e-6, areas[i] * boost);
+  });
+  const weightSum = weights.reduce((s, w) => s + w, 0);
+
+  const p = new THREE.Vector3(), nv = new THREE.Vector3();
+  const va = new THREE.Vector3(), vb = new THREE.Vector3(), vc = new THREE.Vector3();
+  const na = new THREE.Vector3(), nb = new THREE.Vector3(), nc = new THREE.Vector3();
+  const tmp = new THREE.Vector3();
+
+  for (let mi = 0; mi < meshes.length; mi++) {
+    const mesh = meshes[mi];
+    const geo = mesh.geometry;
+    const pos = geo.attributes.position;
+    const nor = geo.attributes.normal;
+    const ji = geo.attributes.skinIndex;
+    const wi = geo.attributes.skinWeight;
+    const idx = geo.index;
+    const last = mi === meshes.length - 1;
+    let take = Math.max(1, Math.round((weights[mi] / weightSum) * count));
+    if (last) take = count - (P.length / 3);
+    if (take <= 0) continue;
+
+    // The bone that carries a rigid part: the nearest ancestor in the chain that is
+    // a canonical bone. The mesh's own node wins when it is one (the head mesh node).
+    let owner = -1;
+    if (!ji || !wi) {
+      for (let o = mesh; o && o !== gltf.scene; o = o.parent) {
+        const ci = chainIndex.get(o);
+        if (ci !== undefined && boneSet.has(ci)) { owner = ci; break; }
+      }
+      if (owner < 0) continue; // nothing in this chain can move it
+    }
+
+    const sampler = new MeshSurfaceSampler(mesh).build();
+    sampler.randomFunction = rnd;
+
+    // The bind position of every vertex, in world space at the bind pose.
+    //
+    // A rigid part simply follows its bone: the world position is the mesh's own.
+    // A skinned part is different: in this rig the raw geometry and the bones do not
+    // describe the same pose (the hands are stored open while the rig rests with the
+    // arms down), and it is the glTF inverse bind matrices that carry the correction.
+    // So the bind position of a skinned vertex is the one three.js itself computes:
+    //   sum over the four bones of weight * (bone world matrix * inverse bind matrix) * v
+    // and a point on a triangle is the barycentric blend of its three vertices, which is
+    // exactly what the GPU does with the skinned vertex positions.
+    const vCount = pos.count;
+    const bindPos = new Float32Array(vCount * 3);
+    const bindNor = new Float32Array(vCount * 3);
+    const nb = new THREE.Vector3(), tw = new THREE.Vector3();
+    for (let vi = 0; vi < vCount; vi++) {
+      const lv = new THREE.Vector3().fromBufferAttribute(pos, vi);
+      const ln = nor ? new THREE.Vector3().fromBufferAttribute(nor, vi) : new THREE.Vector3(0, 1, 0);
+      if (ji && wi) {
+        const acc = new THREE.Vector3();
+        const an = new THREE.Vector3();
+        for (let k = 0; k < 4; k++) {
+          const wv = wi.getComponent(vi, k);
+          if (!wv) continue;
+          const joint = Math.round(ji.getComponent(vi, k));
+          const b = skeleton.bones[joint];
+          const ib = skeleton.boneInverses[joint];
+          const M = new THREE.Matrix4().multiplyMatrices(b.matrixWorld, ib);
+          acc.addScaledVector(lv.clone().applyMatrix4(M), wv);
+          an.addScaledVector(ln.clone().transformDirection(new THREE.Matrix4().extractRotation(M)), wv);
+        }
+        bindPos[vi * 3] = acc.x; bindPos[vi * 3 + 1] = acc.y; bindPos[vi * 3 + 2] = acc.z;
+        an.normalize();
+        bindNor[vi * 3] = an.x; bindNor[vi * 3 + 1] = an.y; bindNor[vi * 3 + 2] = an.z;
+      } else {
+        const wv = lv.clone().applyMatrix4(mesh.matrixWorld);
+        bindPos[vi * 3] = wv.x; bindPos[vi * 3 + 1] = wv.y; bindPos[vi * 3 + 2] = wv.z;
+        const wn = ln.clone().transformDirection(mesh.matrixWorld);
+        bindNor[vi * 3] = wn.x; bindNor[vi * 3 + 1] = wn.y; bindNor[vi * 3 + 2] = wn.z;
+      }
+    }
+
+    for (let k = 0; k < take; k++) {
+      const face = sampler._sampleFaceIndex();
+      const i0 = idx ? idx.getX(face * 3) : face * 3;
+      const i1 = idx ? idx.getX(face * 3 + 1) : face * 3 + 1;
+      const i2 = idx ? idx.getX(face * 3 + 2) : face * 3 + 2;
+      va.fromBufferAttribute(pos, i0); vb.fromBufferAttribute(pos, i1); vc.fromBufferAttribute(pos, i2);
+      if (nor) { na.fromBufferAttribute(nor, i0); nb.fromBufferAttribute(nor, i1); nc.fromBufferAttribute(nor, i2); }
+
+      // Barycentric coordinates. A share of the samples lands on an edge, because
+      // contours and creases are where the form reads (Look Lock: edges ~3x density).
+      let u, v, w;
+      const onEdge = rnd() < edgeShare;
+      if (onEdge) {
+        const e = Math.floor(rnd() * 3);
+        const t = rnd();
+        if (e === 0) { u = 1 - t; v = t; w = 0; }
+        else if (e === 1) { u = 0; v = 1 - t; w = t; }
+        else { u = t; v = 0; w = 1 - t; }
+      } else {
+        u = rnd(); v = rnd();
+        if (u + v > 1) { u = 1 - u; v = 1 - v; }
+        w = 1 - (u + v);
+      }
+
+      // The bind position of the sample: the barycentric blend of the three vertices'
+      // bind positions. For a rigid mesh this is the mesh's own surface; for a skinned
+      // mesh it is the surface the rig actually rests on.
+      p.set(
+        u * bindPos[i0 * 3] + v * bindPos[i1 * 3] + w * bindPos[i2 * 3],
+        u * bindPos[i0 * 3 + 1] + v * bindPos[i1 * 3 + 1] + w * bindPos[i2 * 3 + 1],
+        u * bindPos[i0 * 3 + 2] + v * bindPos[i1 * 3 + 2] + w * bindPos[i2 * 3 + 2]
+      );
+      nv.set(
+        u * bindNor[i0 * 3] + v * bindNor[i1 * 3] + w * bindNor[i2 * 3],
+        u * bindNor[i0 * 3 + 1] + v * bindNor[i1 * 3 + 1] + w * bindNor[i2 * 3 + 1],
+        u * bindNor[i0 * 3 + 2] + v * bindNor[i1 * 3 + 2] + w * bindNor[i2 * 3 + 2]
+      );
+      if (nv.lengthSq() > 1e-12) nv.normalize();
+      P.push(p.x, p.y, p.z);
+      N.push(nv.x, nv.y, nv.z);
+
+      if (ji && wi) {
+        // A genuinely skinned part: interpolate the three vertices' bone weights.
+        const acc = new Map();
+        for (const [vi, bw] of [[i0, u], [i1, v], [i2, w]]) {
+          for (let s = 0; s < 4; s++) {
+            const ww = wi.getComponent(vi, s) * bw;
+            if (ww <= 1e-6) continue;
+            const joint = Math.round(ji.getComponent(vi, s));
+            const ci = jointChainIndex[joint];
+            if (ci === undefined) continue;
+            acc.set(ci, (acc.get(ci) || 0) + ww);
+          }
+        }
+        const top = [...acc.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4);
+        const sum = top.reduce((s, e) => s + e[1], 0) || 1;
+        while (top.length < 4) top.push([0, 0]);
+        SI.push(top[0][0], top[1][0], top[2][0], top[3][0]);
+        SW.push(top[0][1] / sum, top[1][1] / sum, top[2][1] / sum, top[3][1] / sum);
+      } else {
+        // A rigid part: one bone, weight 1. It follows that bone exactly.
+        SI.push(owner, owner, owner, owner);
+        SW.push(1, 0, 0, 0);
+      }
+      D.push(onEdge ? 1 : 0.6);
+    }
+  }
+
+  const total = P.length / 3;
+
+  // ---- the exported rig ---------------------------------------------------
+  const nodes = chain.map((o, i) => {
+    const pi = o.parent && o.parent !== gltf.scene ? chainIndex.get(o.parent) : -1;
+    return {
+      name: 'n' + i,
+      parent: pi === undefined ? -1 : pi,
+      position: o.position.toArray(),
+      quaternion: o.quaternion.toArray(),
+      scale: o.scale.toArray(),
+      bone: boneSet.has(i) ? boneChain.indexOf(i) : -1,
+    };
+  });
+  // The inverse bind matrix of every chain node, taken from its own world matrix at
+  // the bind pose. That is exactly what three.js's Skeleton.calculateInverses does,
+  // and it keeps the export self-consistent with the exported chain.
+  const boneInverses = chain.map((o) => new THREE.Matrix4().copy(o.matrixWorld).invert().elements.slice());
+
+  // The clips, with their track names rewritten to the exported chain names so the
+  // runtime mixer can bind them without guessing.
+  const clips = [];
+  for (const name of clipNames) {
+    const clip = gltf.animations.find((c) => c.name === name);
+    if (!clip) throw new Error('no clip named ' + name);
+    const tracks = [];
+    for (const tr of clip.tracks) {
+      const dot = tr.name.lastIndexOf('.');
+      if (dot < 0) continue;
+      const prop = tr.name.slice(dot + 1);
+      if (prop === 'morphTargetInfluences') continue;
+      const obj = byName.get(tr.name.slice(0, dot));
+      const ci = obj ? chainIndex.get(obj) : undefined;
+      if (ci === undefined) continue;
+      tracks.push({
+        name: 'n' + ci + '.' + prop,
+        type: tr.constructor.name,
+        times: Array.from(tr.times),
+        values: Array.from(tr.values),
+      });
+    }
+    clips.push({ name: clip.name, duration: clip.duration, tracks });
+  }
+
+  // The rest-pose bounds, so the runtime can scale the rig to human height.
+  let minX = Infinity, minY = Infinity, minZ = Infinity, maxX = -Infinity, maxY = -Infinity, maxZ = -Infinity;
+  for (let i = 0; i < total; i++) {
+    const x = P[i * 3], y = P[i * 3 + 1], z = P[i * 3 + 2];
+    if (x < minX) minX = x; if (x > maxX) maxX = x;
+    if (y < minY) minY = y; if (y > maxY) maxY = y;
+    if (z < minZ) minZ = z; if (z > maxZ) maxZ = z;
+  }
+
+  // Self-check: the cloud must live inside the volume three.js actually draws, so a
+  // rig whose geometry and bones disagree cannot ship a cloud that is not the model.
+  const renderBox = new THREE.Box3();
+  const rv = new THREE.Vector3();
+  for (const mesh of meshes) {
+    const pos = mesh.geometry.attributes.position;
+    for (let i = 0; i < pos.count; i++) {
+      if (mesh.isSkinnedMesh) mesh.getVertexPosition(i, rv);
+      else rv.fromBufferAttribute(pos, i);
+      renderBox.expandByPoint(rv.clone().applyMatrix4(mesh.matrixWorld));
+    }
+  }
+  const slack = renderBox.getSize(new THREE.Vector3()).multiplyScalar(0.02);
+  renderBox.expandByVector(slack);
+  for (let i = 0; i < total; i++) {
+    tmp.set(P[i * 3], P[i * 3 + 1], P[i * 3 + 2]);
+    if (!renderBox.containsPoint(tmp)) {
+      throw new Error(`sample ${i} at (${tmp.x.toFixed(2)}, ${tmp.y.toFixed(2)}, ${tmp.z.toFixed(2)}) is outside the rendered volume`);
+    }
+  }
+
+  return {
+    count: total,
+    positions: P, normals: N, density: D, skinIndex: SI, skinWeight: SW,
+    skeleton: { bones: nodes, boneInverses },
+    boneOrder: boneChain.map((i) => chain[i].name),
+    boneNames: boneChain.map((i) => (chain[i].name || 'bone') + '#' + i),
+    clips,
+    bounds: { min: [minX, minY, minZ], max: [maxX, maxY, maxZ] },
+    chainLength: chain.length,
+    boneCount: boneChain.length,
+  };
+};
+</script>

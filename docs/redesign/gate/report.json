@@ -1,0 +1,1029 @@
+{
+  "schema": "petros-gate/1",
+  "generatedAt": "2026-10-25T14:25:58.307Z",
+  "target": {
+    "commit": "e3b8f969b0c3d03ed3c928462b0a7659bf1f0c7b",
+    "treeSha": "8b4b461047a84c8e371be046cbf5e6fbefeb4812",
+    "branch": "redesign/office",
+    "ref": "HEAD",
+    "workingTreeDirty": true
+  },
+  "definitions": {
+    "lock": {
+      "ok": true,
+      "reason": null,
+      "files": {
+        "verify/gate/gate.mjs": "9c2faf0172ff7bd731ba54891cec808e13142480bf59437b90ca2f1e21d5f802",
+        "verify/gate/requirements.json": "f29409ace7b0da216fa2710c1a4bfcbe8e146c791961164a4c2adb0999eb060d",
+        "verify/gate/mutants.mjs": "adb7effb005ddf64abcd0e3983e9b3214869b96feaa8201367ff07569341c79c",
+        "verify/gate/runtime.mjs": "689a883112866b188ea95639582343d8e17909f01ccb97161238af95200513af",
+        "verify/run.mjs": "85bb1650afcf42f81a36ec7fb8a4e000d57501ed0c8cee748254b2798d1c40fe",
+        "verify/lib/metrics.mjs": "d889bd0a3fc8de401619b26504e7715cd80664c5810244725c57d023df0bb119",
+        "verify/release-check.mjs": "66c6d3f80d0f1a33a184858db2e31c8fda60c324d1e8497f145bbeab31cd0e3e",
+        "verify/thresholds.json": "cd01efd11eb40f0bed60ba0b20cb7a00902df531592a94b67597960434426722"
+      }
+    },
+    "protected": [
+      "verify/gate/gate.mjs",
+      "verify/gate/requirements.json",
+      "verify/gate/mutants.mjs",
+      "verify/gate/runtime.mjs",
+      "verify/run.mjs",
+      "verify/lib/metrics.mjs",
+      "verify/release-check.mjs",
+      "verify/thresholds.json"
+    ],
+    "requirementsSource": "commit"
+  },
+  "environment": {
+    "node": "v20.18.0",
+    "nodePath": "/home/cua/workspace/tools/node20/bin/node",
+    "minNodeMajor": 20,
+    "nodeCandidates": [],
+    "platform": "linux/x64"
+  },
+  "steps": [
+    {
+      "id": "lint",
+      "cmd": "/home/cua/workspace/tools/node20/bin/node node_modules/typescript/bin/tsc --noEmit",
+      "status": "pass",
+      "exit": 0,
+      "ms": 12753,
+      "stdoutSha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "docs/redesign/gate/logs/lint.log",
+      "tail": ""
+    },
+    {
+      "id": "build",
+      "cmd": "/bin/sh -c vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
+      "status": "pass",
+      "exit": 0,
+      "ms": 30891,
+      "stdoutSha": "619941ddf2d4624d7b6ce7d885cdd8eaf581e94bece95a81dfbef436a0754537",
+      "log": "docs/redesign/gate/logs/build.log",
+      "tail": "\u001b[36mvite v8.3.1 \u001b[32mbuilding client environment for production...\u001b[36m\u001b[39m\ntransforming...\n✓ 2400 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                    29.54 kB │ gzip:   7.37 kB\ndist/assets/index-DOGuShIN.css    411.33 kB │ gzip:  45.84 kB\ndist/assets/index-Cj4x55U2.js   1,464.48 kB │ gzip: 418.11 kB\n\n\u001b[32m✓ built in 29.03s\u001b[39m\n\u001b[33mYou are using Node.js 20.18.0. Vite requires Node.js version 20.19+ or 22.12+. Please upgrade your Node.js version.\u001b[39m\n\u001b[33m[plugin builtin:vite-reporter] \n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\u001b[39m\n\u001b[33m\u001b[33m[PLUGIN_TIMINGS] \u001b[0mJavaScript callbacks ran for 28.4s of this 29.0s build (98%).\n2 callbacks are listed without a time. Their calls overlapped, so the time inside one call includes work from other calls. To find their cost, profile the build with `node --cpu-prof`:\n  - plugin vite:css-post transform (8 calls)\n  - plugin @tailwindcss/vite:generate:build transform (8 calls)\nSee https://rolldown.rs/reference/InputOptions.checks#bundlertimings for more details.\n\u001b[39m\n\n  dist/server.cjs      716.2kb\n  dist/server.cjs.map    1.1mb\n\n⚡ Done in 72ms\n"
+    },
+    {
+      "id": "unit",
+      "required": true,
+      "cmd": "node --import tsx --test <file> (one process per test file)",
+      "status": "pass",
+      "exit": 0,
+      "ms": 113176,
+      "stdoutSha": "30bab976db29a68ef0f3b73ecfd62e23c336a7ed008ff57c4bf3b0a0d5d9e1d3",
+      "log": null,
+      "tail": "34 test files ran, all exited 0",
+      "files": 34
+    },
+    {
+      "id": "release",
+      "cmd": "/home/cua/workspace/tools/node20/bin/node verify/release-check.mjs",
+      "status": "pass",
+      "exit": 0,
+      "ms": 1689,
+      "stdoutSha": "cce6d912987646783aab562280c52381604705ac4914281a047c7f03e07ca118",
+      "log": "docs/redesign/gate/logs/release.log",
+      "tail": "PASS  scripts resolve      35 entries\nPASS  thresholds complete  12 keys\nPASS  backdrop records     10/10 records, all distinct\nPASS  no placeholder art   none\nPASS  build artifacts      dist/index.html + dist/server.cjs\n\nrelease-check: 5/5 passed\n"
+    },
+    {
+      "id": "sast",
+      "cmd": "/home/cua/workspace/tools/node20/bin/node --import tsx --input-type=module -e import { scanTree, summarise } from './server/securityScanner.ts'; const s = summarise(scanTree(process.cwd(), 400).results); console.log(JSON.stringify(s.totals)); process.exit(s.passed ? 0 : 1);",
+      "status": "pass",
+      "exit": 0,
+      "ms": 2497,
+      "stdoutSha": "5beac7dba46a1ecfe39befaa3f6a1e2187d52fc19be390460b17d1ffb5049222",
+      "log": "docs/redesign/gate/logs/sast.log",
+      "tail": "{\"critical\":0,\"high\":0,\"medium\":0,\"low\":13}\n"
+    }
+  ],
+  "artifacts": {
+    "dist/index.html": {
+      "present": true,
+      "sha256": "89a8d171578e4ea69d9b430566b5634e8c6e4829c78f5bd59b50e9b7f0b828fb",
+      "bytes": 29548,
+      "fresh": true
+    },
+    "dist/server.cjs": {
+      "present": true,
+      "sha256": "aad130fc452a802f9be0faf97abf2fbc8b64761309a1e677f69f7152793c2d16",
+      "bytes": 733355,
+      "fresh": true
+    }
+  },
+  "requirements": [
+    {
+      "id": "R-ROOM-01",
+      "title": "A business category selects its own room; an unknown key cannot escape to an arbitrary room",
+      "severity": "release",
+      "status": "PASS",
+      "why": "Room selection is the product's core promise: the workspace is built from the business.",
+      "checks": [
+        {
+          "check": {
+            "kind": "test-title",
+            "file": "tests/workspace-scene.test.mjs",
+            "title": "every kind the schema allows has a room"
+          },
+          "status": "PASS",
+          "detail": "\"every kind the schema allows has a room\" reported ok in its own file's run"
+        },
+        {
+          "check": {
+            "kind": "test-title",
+            "file": "tests/workspace-scene.test.mjs",
+            "title": "the same spec always opens the same room"
+          },
+          "status": "PASS",
+          "detail": "\"the same spec always opens the same room\" reported ok in its own file's run"
+        },
+        {
+          "check": {
+            "kind": "test-title",
+            "file": "tests/workspace-scene.test.mjs",
+            "title": "an unknown kind cannot escape to an arbitrary room"
+          },
+          "status": "PASS",
+          "detail": "\"an unknown kind cannot escape to an arbitrary room\" reported ok in its own file's run"
+        },
+        {
+          "check": {
+            "kind": "test-title",
+            "file": "tests/workspace-scene.test.mjs",
+            "title": "different businesses get different environments, not one template"
+          },
+          "status": "PASS",
+          "detail": "\"different businesses get different environments, not one template\" reported ok in its own file's run"
+        }
+      ]
+    },
+    {
+      "id": "R-SPEC-02",
+      "title": "SceneSpec is zod-validated: coordinates/colours, duplicate ids and out-of-bounds panels are rejected",
+      "severity": "release",
+      "status": "PASS",
+      "why": "The model decides WHAT, never coordinates. A permissive schema lets a hostile reply draw the product.",
+      "checks": [
+        {
+          "check": {
+            "kind": "test-title",
+            "file": "tests/workspace-compose.test.mjs",
+            "title": "spec: a coordinate or colour anywhere is rejected, not dropped"
+          },
+          "status": "PASS",
+          "detail": "\"spec: a coordinate or colour anywhere is rejected, not dropped\" reported ok in its own file's run"
+        },
+        {
+          "check": {
+            "kind": "test-title",
+            "file": "tests/workspace-compose.test.mjs",
+            "title": "spec: duplicate ids are a failure"
+          },
+          "status": "PASS",
+          "detail": "\"spec: duplicate ids are a failure\" reported ok in its own file's run"
+        },
+        {
+          "check": {
+            "kind": "test-title",
+            "file": "tests/workspace-compose.test.mjs",
+            "title": "spec: panel count bounds are enforced"
+          },
+          "status": "PASS",
+          "detail": "\"spec: panel count bounds are enforced\" reported ok in its own file's run"
+        }
+      ]
+    },
+    {
+      "id": "R-FALLBACK-03",
+      "title": "Model failure modes (empty, malformed, timeout, error) fall back to a valid spec instead of failing",
+      "severity": "release",
+      "status": "PASS",
+      "why": "A provider outage must degrade the workspace, not break it.",
+      "checks": [
+        {
+          "check": {
+            "kind": "test-title",
+            "file": "tests/workspace-compose.test.mjs",
+            "title": "compose: no model configured falls back instead of failing"
+          },
+          "status": "PASS",
+          "detail": "\"compose: no model configured falls back instead of failing\" reported ok in its own file's run"
+        },
+        {
+          "check": {
+            "kind": "test-title",
+            "file": "tests/workspace-compose.test.mjs",
+            "title": "compose: non-JSON, bad schema and model failure all fall back"
+          },
+          "status": "PASS",
+          "detail": "\"compose: non-JSON, bad schema and model failure all fall back\" reported ok in its own file's run"
+        },
+        {
+          "check": {
+            "kind": "test-title",
+            "file": "tests/workspace-compose.test.mjs",
+            "title": "compose: a model timeout falls back within the budget"
+          },
+          "status": "PASS",
+          "detail": "\"compose: a model timeout falls back within the budget\" reported ok in its own file's run"
+        },
+        {
+          "check": {
+            "kind": "test-title",
+            "file": "tests/workspace-compose.test.mjs",
+            "title": "compose: a valid model answer is used as-is"
+          },
+          "status": "PASS",
+          "detail": "\"compose: a valid model answer is used as-is\" reported ok in its own file's run"
+        }
+      ]
+    },
+    {
+      "id": "R-LIVE-04",
+      "title": "Model-generated room selection verified against a real provider",
+      "severity": "tracked",
+      "status": "NOT_APPLICABLE",
+      "why": "Compose tests use a fake provider. Without credentials the product's live path is unproven.",
+      "checks": [
+        {
+          "check": {
+            "kind": "manual",
+            "justification": "No provider key is present in .env and Pollinations answers 402. Every accepted proof so far is the fallback path. This is reported as an unresolved risk, not a pass."
+          },
+          "status": "NOT_APPLICABLE",
+          "detail": "No provider key is present in .env and Pollinations answers 402. Every accepted proof so far is the fallback path. This is reported as an unresolved risk, not a pass."
+        }
+      ]
+    },
+    {
+      "id": "R-SCENE-05",
+      "title": "Scene contracts hold: deterministic procedural set, dptscn parses, corrupt magic rejected",
+      "severity": "release",
+      "status": "PASS",
+      "why": "The backdrop is generated code; a silent non-determinism breaks every visual gate downstream.",
+      "checks": [
+        {
+          "check": {
+            "kind": "test-title",
+            "file": "tests/office-camera-fit.test.mjs",
+            "title": "procedural set: every room produces a deterministic cloud in metres"
+          },
+          "status": "PASS",
+          "detail": "\"procedural set: every room produces a deterministic cloud in metres\" reported ok in its own file's run"
+        },
+        {
+          "check": {
+            "kind": "test-title",
+            "file": "tests/office-engine.test.mjs",
+            "title": "dptscn: every built scene parses with consistent lengths"
+          },
+          "status": "PASS",
+          "detail": "\"dptscn: every built scene parses with consistent lengths\" reported ok in its own file's run"
+        },
+        {
+          "check": {
+            "kind": "test-title",
+            "file": "tests/office-engine.test.mjs",
+            "title": "dptscn: a corrupt magic is rejected, not half-parsed"
+          },
+          "status": "PASS",
+          "detail": "\"dptscn: a corrupt magic is rejected, not half-parsed\" reported ok in its own file's run"
+        }
+      ]
+    },
+    {
+      "id": "R-COPY-06",
+      "title": "Engineering provenance never reaches the product surface",
+      "severity": "release",
+      "status": "PASS",
+      "why": "Roadmap words on screen are a product leak, and were fixed once already.",
+      "checks": [
+        {
+          "check": {
+            "kind": "test-file",
+            "file": "tests/forbidden-copy.test.mjs"
+          },
+          "status": "PASS",
+          "detail": "tests/forbidden-copy.test.mjs: 7/7 tests ok, 0 skipped, 0 todo"
+        },
+        {
+          "check": {
+            "kind": "test-title",
+            "file": "tests/rtl-typography.test.mjs",
+            "title": "the welcome heading collapses to zero tracking only under RTL or Persian"
+          },
+          "status": "PASS",
+          "detail": "\"the welcome heading collapses to zero tracking only under RTL or Persian\" reported ok in its own file's run"
+        }
+      ]
+    },
+    {
+      "id": "R-SEC-07",
+      "title": "Authorization boundaries and data isolation hold on the server",
+      "severity": "release",
+      "status": "PASS",
+      "why": "The office serves more than one business; a leak between them is a trust failure.",
+      "checks": [
+        {
+          "check": {
+            "kind": "test-file",
+            "file": "tests/api.test.mjs"
+          },
+          "status": "PASS",
+          "detail": "tests/api.test.mjs: 12/12 tests ok, 0 skipped, 0 todo"
+        },
+        {
+          "check": {
+            "kind": "test-file",
+            "file": "tests/startup-data-isolation.test.mjs"
+          },
+          "status": "PASS",
+          "detail": "tests/startup-data-isolation.test.mjs: 5/5 tests ok, 0 skipped, 0 todo"
+        },
+        {
+          "check": {
+            "kind": "step",
+            "step": "sast"
+          },
+          "status": "PASS",
+          "detail": "sast exit 0"
+        }
+      ]
+    },
+    {
+      "id": "R-BUILD-08",
+      "title": "A production build produces both artifacts, freshly, from this commit",
+      "severity": "release",
+      "status": "PASS",
+      "why": "The gate runs the build script declared in the judged commit, then hashes both artifacts and requires them to be newer than this run.",
+      "checks": [
+        {
+          "check": {
+            "kind": "step",
+            "step": "build"
+          },
+          "status": "PASS",
+          "detail": "build exit 0"
+        },
+        {
+          "check": {
+            "kind": "artifact",
+            "path": "dist/index.html"
+          },
+          "status": "PASS",
+          "detail": "dist/index.html sha256 89a8d171578e…"
+        },
+        {
+          "check": {
+            "kind": "artifact",
+            "path": "dist/server.cjs"
+          },
+          "status": "PASS",
+          "detail": "dist/server.cjs sha256 aad130fc452a…"
+        }
+      ]
+    },
+    {
+      "id": "R-ART-09",
+      "title": "Look-lock art gates pass on frames rendered from this commit",
+      "severity": "release",
+      "status": "BLOCKED",
+      "why": "The look is the product. A green unit suite says nothing about it.",
+      "checks": [
+        {
+          "check": {
+            "kind": "visual-report",
+            "rows": [
+              "near-white %",
+              "mean luma",
+              "non-bg %",
+              "amber % of non-bg",
+              "lit components (2x crop)",
+              "largest component %"
+            ]
+          },
+          "status": "BLOCKED",
+          "detail": "no visual report supplied"
+        }
+      ]
+    },
+    {
+      "id": "R-RESP-10",
+      "title": "Responsive layout: no overflow, no text overlap, no under-size fonts or touch targets",
+      "severity": "release",
+      "status": "BLOCKED",
+      "why": "The office is used on phones; layout failures are invisible to unit tests.",
+      "checks": [
+        {
+          "check": {
+            "kind": "visual-report",
+            "rows": [
+              "horizontal scroll",
+              "text overlaps",
+              "small fonts",
+              "small touch targets"
+            ]
+          },
+          "status": "BLOCKED",
+          "detail": "no visual report supplied"
+        }
+      ]
+    },
+    {
+      "id": "R-REL-12",
+      "title": "The release records check passes at the commit under judgement",
+      "severity": "release",
+      "status": "PASS",
+      "why": "verify/release-check.mjs is a step the gate runs. While no requirement named it, its exit code was printed in the step line and ignored by the verdict, so a broken release record could ship behind a PASS.",
+      "checks": [
+        {
+          "check": {
+            "kind": "step",
+            "step": "release"
+          },
+          "status": "PASS",
+          "detail": "release exit 0"
+        }
+      ]
+    }
+  ],
+  "unresolved": [
+    {
+      "id": "R-LIVE-04",
+      "title": "Model-generated room selection verified against a real provider",
+      "status": "NOT_APPLICABLE",
+      "detail": "No provider key is present in .env and Pollinations answers 402. Every accepted proof so far is the fallback path. This is reported as an unresolved risk, not a pass."
+    },
+    {
+      "id": "file:tests/backdrop-reveal.test.mjs",
+      "title": "tests/backdrop-reveal.test.mjs is not clean",
+      "status": "BLOCKED",
+      "detail": "tests/backdrop-reveal.test.mjs skipped 1 test(s)"
+    }
+  ],
+  "verdict": "BLOCKED",
+  "buildCommand": "vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
+  "unitFiles": [
+    {
+      "file": "tests/ai-director.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/ai-director.test.mjs: 1/1 tests ok, 0 skipped, 0 todo",
+      "ms": 973
+    },
+    {
+      "file": "tests/api.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 12,
+        "pass": 12,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/api.test.mjs: 12/12 tests ok, 0 skipped, 0 todo",
+      "ms": 30158
+    },
+    {
+      "file": "tests/autonomous-pipeline.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 5,
+        "pass": 5,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/autonomous-pipeline.test.mjs: 5/5 tests ok, 0 skipped, 0 todo",
+      "ms": 9839
+    },
+    {
+      "file": "tests/backdrop-reveal.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 6,
+        "pass": 5,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 1,
+        "todo": 0
+      },
+      "verdict": "BLOCKED",
+      "detail": "tests/backdrop-reveal.test.mjs skipped 1 test(s)",
+      "ms": 998
+    },
+    {
+      "file": "tests/camera-rig.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 15,
+        "pass": 15,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/camera-rig.test.mjs: 15/15 tests ok, 0 skipped, 0 todo",
+      "ms": 588
+    },
+    {
+      "file": "tests/character-assets.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 13,
+        "pass": 13,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/character-assets.test.mjs: 13/13 tests ok, 0 skipped, 0 todo",
+      "ms": 737
+    },
+    {
+      "file": "tests/engines.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 7,
+        "pass": 7,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/engines.test.mjs: 7/7 tests ok, 0 skipped, 0 todo",
+      "ms": 7694
+    },
+    {
+      "file": "tests/event-map.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 4,
+        "pass": 4,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/event-map.test.mjs: 4/4 tests ok, 0 skipped, 0 todo",
+      "ms": 592
+    },
+    {
+      "file": "tests/forbidden-copy.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 7,
+        "pass": 7,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/forbidden-copy.test.mjs: 7/7 tests ok, 0 skipped, 0 todo",
+      "ms": 598
+    },
+    {
+      "file": "tests/freshness-contract.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 5,
+        "pass": 5,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/freshness-contract.test.mjs: 5/5 tests ok, 0 skipped, 0 todo",
+      "ms": 556
+    },
+    {
+      "file": "tests/gate-contract.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 6,
+        "pass": 6,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/gate-contract.test.mjs: 6/6 tests ok, 0 skipped, 0 todo",
+      "ms": 688
+    },
+    {
+      "file": "tests/gate-evidence.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 22,
+        "pass": 22,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/gate-evidence.test.mjs: 22/22 tests ok, 0 skipped, 0 todo",
+      "ms": 610
+    },
+    {
+      "file": "tests/glide.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 12,
+        "pass": 12,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/glide.test.mjs: 12/12 tests ok, 0 skipped, 0 todo",
+      "ms": 586
+    },
+    {
+      "file": "tests/light-field.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 6,
+        "pass": 6,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/light-field.test.mjs: 6/6 tests ok, 0 skipped, 0 todo",
+      "ms": 2462
+    },
+    {
+      "file": "tests/motion.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 15,
+        "pass": 15,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/motion.test.mjs: 15/15 tests ok, 0 skipped, 0 todo",
+      "ms": 817
+    },
+    {
+      "file": "tests/office-camera-fit.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 10,
+        "pass": 10,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/office-camera-fit.test.mjs: 10/10 tests ok, 0 skipped, 0 todo",
+      "ms": 2354
+    },
+    {
+      "file": "tests/office-director.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 13,
+        "pass": 13,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/office-director.test.mjs: 13/13 tests ok, 0 skipped, 0 todo",
+      "ms": 953
+    },
+    {
+      "file": "tests/office-engine.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 4,
+        "pass": 4,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/office-engine.test.mjs: 4/4 tests ok, 0 skipped, 0 todo",
+      "ms": 646
+    },
+    {
+      "file": "tests/office-host.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 12,
+        "pass": 12,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/office-host.test.mjs: 12/12 tests ok, 0 skipped, 0 todo",
+      "ms": 702
+    },
+    {
+      "file": "tests/office-scene-v2.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 12,
+        "pass": 12,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/office-scene-v2.test.mjs: 12/12 tests ok, 0 skipped, 0 todo",
+      "ms": 951
+    },
+    {
+      "file": "tests/office-task-feed.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 13,
+        "pass": 13,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/office-task-feed.test.mjs: 13/13 tests ok, 0 skipped, 0 todo",
+      "ms": 1280
+    },
+    {
+      "file": "tests/repo-hygiene.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 5,
+        "pass": 5,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/repo-hygiene.test.mjs: 5/5 tests ok, 0 skipped, 0 todo",
+      "ms": 607
+    },
+    {
+      "file": "tests/rtl-typography.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 3,
+        "pass": 3,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/rtl-typography.test.mjs: 3/3 tests ok, 0 skipped, 0 todo",
+      "ms": 608
+    },
+    {
+      "file": "tests/safe-frame.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 12,
+        "pass": 12,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/safe-frame.test.mjs: 12/12 tests ok, 0 skipped, 0 todo",
+      "ms": 943
+    },
+    {
+      "file": "tests/scene-director.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 13,
+        "pass": 13,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/scene-director.test.mjs: 13/13 tests ok, 0 skipped, 0 todo",
+      "ms": 7679
+    },
+    {
+      "file": "tests/skinned-sampler.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 3,
+        "pass": 3,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/skinned-sampler.test.mjs: 3/3 tests ok, 0 skipped, 0 todo",
+      "ms": 848
+    },
+    {
+      "file": "tests/spatial-layout.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 2,
+        "pass": 2,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/spatial-layout.test.mjs: 2/2 tests ok, 0 skipped, 0 todo",
+      "ms": 1098
+    },
+    {
+      "file": "tests/startup-data-isolation.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 5,
+        "pass": 5,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/startup-data-isolation.test.mjs: 5/5 tests ok, 0 skipped, 0 todo",
+      "ms": 1470
+    },
+    {
+      "file": "tests/startup-persistence.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 18,
+        "pass": 18,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/startup-persistence.test.mjs: 18/18 tests ok, 0 skipped, 0 todo",
+      "ms": 621
+    },
+    {
+      "file": "tests/webapp-with-server.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 3,
+        "pass": 3,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/webapp-with-server.test.mjs: 3/3 tests ok, 0 skipped, 0 todo",
+      "ms": 1172
+    },
+    {
+      "file": "tests/workspace-compose.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 15,
+        "pass": 15,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/workspace-compose.test.mjs: 15/15 tests ok, 0 skipped, 0 todo",
+      "ms": 29935
+    },
+    {
+      "file": "tests/workspace-fallback.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 8,
+        "pass": 8,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/workspace-fallback.test.mjs: 8/8 tests ok, 0 skipped, 0 todo",
+      "ms": 1682
+    },
+    {
+      "file": "tests/workspace-intent.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 5,
+        "pass": 5,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/workspace-intent.test.mjs: 5/5 tests ok, 0 skipped, 0 todo",
+      "ms": 775
+    },
+    {
+      "file": "tests/workspace-scene.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 6,
+        "pass": 6,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "verdict": "PASS",
+      "detail": "tests/workspace-scene.test.mjs: 6/6 tests ok, 0 skipped, 0 todo",
+      "ms": 628
+    }
+  ],
+  "unitAnomalies": [
+    {
+      "file": "tests/backdrop-reveal.test.mjs",
+      "runStatus": "pass",
+      "tests": {
+        "tests": 6,
+        "pass": 5,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 1,
+        "todo": 0
+      },
+      "verdict": "BLOCKED",
+      "detail": "tests/backdrop-reveal.test.mjs skipped 1 test(s)",
+      "ms": 998
+    }
+  ],
+  "stepAudit": [
+    {
+      "id": "lint",
+      "required": false,
+      "status": "PASS",
+      "detail": "lint exit 0"
+    },
+    {
+      "id": "build",
+      "required": false,
+      "status": "PASS",
+      "detail": "build exit 0"
+    },
+    {
+      "id": "unit",
+      "required": true,
+      "status": "PASS",
+      "detail": "unit exit 0"
+    },
+    {
+      "id": "release",
+      "required": false,
+      "status": "PASS",
+      "detail": "release exit 0"
+    },
+    {
+      "id": "sast",
+      "required": false,
+      "status": "PASS",
+      "detail": "sast exit 0"
+    }
+  ],
+  "policy": [],
+  "fingerprint": "ee3db613f8d1df946582c1ba65bdd052be8ab624def767d8822862409bbb60b1",
+  "worktreeRemoved": true
+}

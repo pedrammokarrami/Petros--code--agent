@@ -1,0 +1,16 @@
+{
+  "schema": "petros-gate-lock/1",
+  "lockedAt": "2026-10-25T13:34:38.216Z",
+  "reason": "STEP 2: protect verify/run.mjs, lib/metrics.mjs, release-check.mjs; lock drift vetos the verdict; --lock requires reason+ticket; threshold edits need a changelog entry",
+  "ticket": "STEP-2",
+  "files": {
+    "verify/gate/gate.mjs": "9c2faf0172ff7bd731ba54891cec808e13142480bf59437b90ca2f1e21d5f802",
+    "verify/gate/requirements.json": "f29409ace7b0da216fa2710c1a4bfcbe8e146c791961164a4c2adb0999eb060d",
+    "verify/gate/mutants.mjs": "adb7effb005ddf64abcd0e3983e9b3214869b96feaa8201367ff07569341c79c",
+    "verify/gate/runtime.mjs": "689a883112866b188ea95639582343d8e17909f01ccb97161238af95200513af",
+    "verify/run.mjs": "85bb1650afcf42f81a36ec7fb8a4e000d57501ed0c8cee748254b2798d1c40fe",
+    "verify/lib/metrics.mjs": "d889bd0a3fc8de401619b26504e7715cd80664c5810244725c57d023df0bb119",
+    "verify/release-check.mjs": "66c6d3f80d0f1a33a184858db2e31c8fda60c324d1e8497f145bbeab31cd0e3e",
+    "verify/thresholds.json": "cd01efd11eb40f0bed60ba0b20cb7a00902df531592a94b67597960434426722"
+  }
+}

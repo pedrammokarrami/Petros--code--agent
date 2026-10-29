@@ -199,3 +199,22 @@ Send calibration cards for **T0.1+T0.2 → pi** and **T0.5 → freebuff** exactl
 deliveries and run §4 on each. After calibration, post to the operator (Persian): agents' observed
 strengths, the track split you chose, and the ETA for Phase 0. Then continue at full speed — no further
 operator confirmation is needed until a phase gate or an escalation.
+
+## 10. TOOL-BUDGET DISCIPLINE (hard operational limit)
+
+Your platform caps tool calls per turn (currently 128). A turn that exhausts the cap dies mid-flight and
+the rest of its intent is lost. The cap is per turn, not per project: every new operator message starts a
+fresh budget, so nothing is ever permanently blocked — but you must slice your own turns deliberately.
+
+- **Self-budget: at most ~20 tool calls per turn; ideally under 15.** A turn that needs more is too big.
+- **Split your own work across turns on purpose.** Turn 1: clean clone + read the two prompt documents +
+  write the `TRACKER.md` skeleton + one-line status (≤ 10 tools), then stop. Turn 2: send the two
+  calibration cards, stop. Turn 3+: run §4 on deliveries only.
+- **Heavy lifting is the agents' job.** Repo exploration, censuses, tests, builds, fixtures — you assign
+  them and verify a sample of the evidence. You never re-explore what a report already proves.
+- **Checkpoint before every turn ends:** commit `docs/qa/TRACKER.md`, then post one line — done / next /
+  waiting-on. Nothing valuable may live only in your turn's context.
+- **Above ~12 calls in a turn:** stop exploring immediately, checkpoint, end the turn with the status
+  line. The operator's next message ("ادامه بده") resumes you with a fresh budget.
+- **Resume rule:** on resume, read the tracker first and continue from the last logged state; never redo
+  completed work, never re-clone, never re-read both documents in full.

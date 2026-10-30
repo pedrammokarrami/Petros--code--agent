@@ -1,0 +1,14 @@
+{
+  "runtime": { "name": "node", "minVersion": "20.0.0" },
+  "required": [
+    { "name": "git", "command": "git", "versionArgs": ["--version"], "install": { "windows": "Git.Git", "macos": "git" } },
+    { "name": "node", "command": "node", "versionArgs": ["--version"], "install": { "windows": "OpenJS.NodeJS.LTS", "macos": "node" } },
+    { "name": "npm", "command": "npm", "versionArgs": ["--version"] },
+    { "name": "pi", "command": "pi", "versionArgs": ["--version"] },
+    { "name": "rg", "command": "rg", "versionArgs": ["--version"], "install": { "windows": "BurntSushi.ripgrep.MSVC", "macos": "ripgrep" } }
+  ],
+  "optional": [
+    { "name": "gh", "command": "gh", "versionArgs": ["--version"], "install": { "windows": "GitHub.cli", "macos": "gh" } },
+    { "name": "tailscale", "command": "tailscale", "versionArgs": ["version"], "install": { "windows": "Tailscale.Tailscale", "macos": "tailscale" } }
+  ]
+}

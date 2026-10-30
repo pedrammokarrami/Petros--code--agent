@@ -1,0 +1,4 @@
+import crypto from 'node:crypto';
+export function encryptSecret(secret, masterKey) { if (!masterKey || masterKey.length !== 32) throw new Error('master key must be 32 bytes'); const iv=crypto.randomBytes(12); const cipher=crypto.createCipheriv('aes-256-gcm',masterKey,iv); const ciphertext=Buffer.concat([cipher.update(secret,'utf8'),cipher.final()]); return {alg:'aes-256-gcm',iv:iv.toString('base64url'),tag:cipher.getAuthTag().toString('base64url'),ciphertext:ciphertext.toString('base64url')}; }
+export function decryptSecret(record, masterKey) { const decipher=crypto.createDecipheriv('aes-256-gcm',masterKey,Buffer.from(record.iv,'base64url')); decipher.setAuthTag(Buffer.from(record.tag,'base64url')); return Buffer.concat([decipher.update(Buffer.from(record.ciphertext,'base64url')),decipher.final()]).toString('utf8'); }
+export function secretMask(secret) { return secret ? `${secret.slice(0,4)}••••${secret.slice(-4)}` : '••••'; }

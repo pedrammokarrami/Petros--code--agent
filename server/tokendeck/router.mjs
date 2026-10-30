@@ -1,0 +1,5 @@
+export class Router {
+  constructor({ strategy = 'priority' } = {}) { this.strategy = strategy; this.cursor = 0; }
+  choose(keys, model) { const usable=keys.filter(k=>k.enabled!==false&&(!k.cooldownUntil||k.cooldownUntil<=Date.now())&&(!k.models?.length||k.models.includes(model))&&(!k.requestsPerMinute||(k.requestsMinute||0)<k.requestsPerMinute)&&(!k.tokensPerDay||(k.tokensToday||0)<k.tokensPerDay)&&(!k.usdBudgetDay||(k.costToday||0)<k.usdBudgetDay)); if(!usable.length)return undefined; if(this.strategy==='round-robin')return usable[this.cursor++%usable.length]; if(this.strategy==='least-used')return [...usable].sort((a,b)=>(a.requestsToday||0)-(b.requestsToday||0))[0]; if(this.strategy==='quota-aware')return [...usable].sort((a,b)=>(a.tokensToday||0)/(a.tokensPerDay||Infinity)-(b.tokensToday||0)/(b.tokensPerDay||Infinity))[0]; return [...usable].sort((a,b)=>(a.priority||0)-(b.priority||0))[0]; }
+  cooldown(key,status) { if(status===429||status>=500){key.failures=(key.failures||0)+1;key.cooldownUntil=Date.now()+Math.min(300000,1000*2**Math.min(key.failures,8));} else if(status>=200&&status<400){key.failures=0;key.cooldownUntil=0;} }
+}

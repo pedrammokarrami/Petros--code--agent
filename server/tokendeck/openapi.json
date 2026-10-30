@@ -1,0 +1,18 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "TokenDeck API", "version": "0.1.0" },
+  "servers": [{ "url": "http://127.0.0.1:8787" }],
+  "security": [{ "bearerAuth": [] }],
+  "paths": {
+    "/healthz": { "get": { "security": [], "responses": { "200": { "description": "Healthy" } } } },
+    "/api/v1/setup": { "post": { "security": [], "responses": { "201": { "description": "Created" } } } },
+    "/api/v1/status": { "get": { "responses": { "200": { "description": "Status" } } } },
+    "/api/v1/keys": { "get": { "responses": { "200": { "description": "Keys" } } }, "post": { "responses": { "201": { "description": "Key created" } } } },
+    "/api/v1/keys/active": { "get": { "responses": { "200": { "description": "Active key" } } } },
+    "/api/v1/usage": { "get": { "responses": { "200": { "description": "Usage" } } } },
+    "/api/v1/combos": { "get": { "responses": { "200": { "description": "Combos" } } } },
+    "/api/v1/events": { "get": { "responses": { "200": { "description": "SSE stream", "content": { "text/event-stream": {} } } } } },
+    "/api/v1/route": { "post": { "responses": { "200": { "description": "OpenAI-compatible response" } } } }
+  },
+  "components": { "securitySchemes": { "bearerAuth": { "type": "http", "scheme": "bearer" } } }
+}

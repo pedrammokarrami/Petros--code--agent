@@ -864,7 +864,7 @@ app.post('/api/fs/search', (req: Request, res: Response) => {
 // ==========================================
 // 3. TERMINAL & EXECUTION API
 // ==========================================
-app.post('/api/terminal/exec', (req: Request, res: Response) => {
+app.post(['/api/terminal/exec', '/api/terminal/run'], (req: Request, res: Response) => {
   const { command, cwd = '.', timeout = 40000, executionId = `exec_${Date.now()}` } = req.body;
 
   if (!command) {

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Petros Autonomous AI
+Comment=Petros Autonomous Engineering & Operations AI - Petros City
+Exec=bash -c "cd $(dirname %k)/.. && ./scripts/run-petros-linux.sh"
+Icon=utilities-terminal
+Terminal=true
+Type=Application
+Categories=Development;Engineering;IDE;
+StartupNotify=true

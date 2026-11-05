@@ -237,25 +237,52 @@ export class InfiniteTokenPool {
   }
 
   /**
-   * Initializes or loads virtual API keys with default PIN '123456'
+   * Secure PIN Management:
+   * Explicitly prohibits insecure default PINs such as '123456'.
+   * Uses environment variable PETROS_SECURITY_PIN or securely stored PIN.
    */
-  private initDefaultKeys(): void {
-    if (this.generatedKeys.length === 0) {
-      this.generateNewApiKey('Codgar Master Infinite Token Key', '123456');
-      this.generateNewApiKey('OmniRoute + 9Router + VansRouter Mesh Key', '123456');
+  private getSecureSystemPin(): string {
+    const envPin = (process.env.PETROS_SECURITY_PIN || '').trim();
+    if (envPin && envPin !== '123456') {
+      return envPin;
+    }
+    const pinFile = path.join(process.cwd(), '.petros_pin');
+    try {
+      if (fs.existsSync(pinFile)) {
+        const stored = fs.readFileSync(pinFile, 'utf8').trim();
+        if (stored && stored !== '123456') return stored;
+      }
+      const newPin = (Math.floor(100000 + Math.random() * 900000)).toString();
+      fs.writeFileSync(pinFile, newPin, { mode: 0o600 });
+      console.log('[Security] Generated new secure session PIN in .petros_pin');
+      return newPin;
+    } catch {
+      return '894217'; // Safe non-trivial fallback
     }
   }
 
   /**
-   * Generates a new API key with the user-specified PIN (default: '123456')
+   * Initializes or loads virtual API keys with secure PIN
    */
-  public generateNewApiKey(label: string = 'Auto-Generated Mesh Key', pin: string = '123456'): GeneratedApiKey {
+  private initDefaultKeys(): void {
+    if (this.generatedKeys.length === 0) {
+      const pin = this.getSecureSystemPin();
+      this.generateNewApiKey('Codgar Master Infinite Token Key', pin);
+      this.generateNewApiKey('OmniRoute + 9Router + VansRouter Mesh Key', pin);
+    }
+  }
+
+  /**
+   * Generates a new API key with the user-specified PIN (prohibits '123456')
+   */
+  public generateNewApiKey(label: string = 'Auto-Generated Mesh Key', pin?: string): GeneratedApiKey {
+    const activePin = (pin && pin.trim() !== '123456') ? pin.trim() : this.getSecureSystemPin();
     const randomHex = crypto.randomBytes(16).toString('hex');
     const newKey: GeneratedApiKey = {
-      id: `key_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
-      key: `sk-codgar-omni9vans-${randomHex}`,
+      id: 'key_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+      key: 'sk-codgar-omni9vans-' + randomHex,
       label,
-      pin: pin || '123456',
+      pin: activePin,
       createdAt: Date.now(),
       lastUsedAt: null,
       requestsHandled: 0,
@@ -264,15 +291,22 @@ export class InfiniteTokenPool {
     };
 
     this.generatedKeys.unshift(newKey);
-    console.log(`[InfiniteTokenPool] 🔑 Generated new API Key: ${newKey.key.slice(0, 20)}... (PIN: 123456)`);
+    console.log('[InfiniteTokenPool] Generated new API Key: ' + newKey.key.slice(0, 20) + '...');
     return newKey;
   }
 
   /**
-   * Verifies PIN (123456) for authentication
+   * Verifies PIN for authentication.
+   * STRICT GUARD: Explicitly rejects '123456' as an insecure default!
    */
   public verifyPin(pin: string): boolean {
-    return pin.trim() === '123456';
+    const trimmed = (pin || '').trim();
+    if (!trimmed || trimmed === '123456' || trimmed === '000000') {
+      console.warn('[Security] Rejected attempt using default/insecure PIN:', trimmed);
+      return false;
+    }
+    const securePin = this.getSecureSystemPin();
+    return trimmed === securePin;
   }
 
   public getGeneratedKeys(): GeneratedApiKey[] {

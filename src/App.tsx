@@ -39,6 +39,7 @@ import { LiveEmailViewerModal } from './components/LiveEmailViewerModal';
 import { McpWebViewModal } from './components/McpWebViewModal';
 import { GmailMessageData } from './types';
 import { voiceAgent } from './services/voiceAgent';
+import { PetrosCityShell } from './components/petros-city/PetrosCityShell';
 import {
   Sparkles,
   Globe,
@@ -68,6 +69,12 @@ export default function App() {
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const [agentState, setAgentState] = useState<AgentState>('idle');
   const [activeWorker, setActiveWorker] = useState<'coder' | 'writer' | null>(null);
+  const [isLegacyMode, setIsLegacyMode] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return new URLSearchParams(window.location.search).get('legacy') === '1';
+    }
+    return false;
+  });
 
   // Persistent Chat Sessions History
   const [chatSessions, setChatSessions] = useState<HistorySession[]>(() => {
@@ -874,6 +881,16 @@ export default function App() {
       setSiriVisualActive(true);
     }
   };
+
+  if (!isLegacyMode) {
+    return (
+      <PetrosCityShell
+        onToggleLegacy={() => setIsLegacyMode(true)}
+        language={language}
+        onLanguageChange={(l) => setLanguage(l as any)}
+      />
+    );
+  }
 
   return (
     <div

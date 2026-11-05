@@ -203,6 +203,7 @@ import { KeyManager } from './server/keyManager';
 import { GaifDevRouter } from './server/gaifRouter';
 import { OmniRouterWorker } from './server/workers/omniRouter';
 import { ClaudeCodeTerminal } from './server/claudeCodeTerminal';
+import { getEcosystemStatus, startSupervisorEcosystem, stopSupervisorEcosystem, executeMcpStatus } from './server/supervisorBridge';
 import { RoutersRegistry } from './server/routersRegistry';
 import { InfiniteTokenPool } from './server/infiniteTokenPool';
 import { UniversalCompiler } from './server/universalCompiler';
@@ -300,8 +301,9 @@ app.use('/media', express.static(mediaDir));
 
 
 const PORT = Number(process.env.PORT) || 3000;
-const BIND_HOST = process.env.BIND_HOST || '0.0.0.0';
-let WORKSPACE_ROOT = process.cwd();
+const BIND_HOST = process.env.BIND_HOST || '127.0.0.1';
+const DEFAULT_PETROS_WORKSPACE = path.resolve(process.env.USERPROFILE || 'C:\\Users\\ELI', 'Desktop', 'petros');
+let WORKSPACE_ROOT = process.env.PETROS_WORKSPACE || (fs.existsSync(DEFAULT_PETROS_WORKSPACE) ? DEFAULT_PETROS_WORKSPACE : process.cwd());
 
 app.use(express.json({ limit: '15mb' }));
 
@@ -310,6 +312,59 @@ app.use(express.json({ limit: '15mb' }));
 
 
 // Health Check API
+// ==========================================
+// PETROS SUPERVISOR & MULTI-ENGINE APIS
+// ==========================================
+app.get('/api/supervisor/status', async (req: Request, res: Response) => {
+  try {
+    const status = await getEcosystemStatus(WORKSPACE_ROOT);
+    res.json({ success: true, ...status });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err?.message || 'Failed to query ecosystem status' });
+  }
+});
+
+app.post('/api/supervisor/start', async (req: Request, res: Response) => {
+  try {
+    const result = await startSupervisorEcosystem();
+    res.json(result);
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err?.message });
+  }
+});
+
+app.post('/api/supervisor/stop', async (req: Request, res: Response) => {
+  try {
+    const result = await stopSupervisorEcosystem();
+    res.json(result);
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err?.message });
+  }
+});
+
+app.get('/api/mcp/tools', async (req: Request, res: Response) => {
+  try {
+    const status = await getEcosystemStatus(WORKSPACE_ROOT);
+    res.json({
+      success: true,
+      online: status.services.mcp.online,
+      tools: status.services.mcp.tools,
+      protocolVersion: status.services.mcp.protocolVersion,
+    });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err?.message });
+  }
+});
+
+app.post('/api/mcp/status', async (req: Request, res: Response) => {
+  try {
+    const result = await executeMcpStatus();
+    res.json(result);
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err?.message });
+  }
+});
+
 app.get('/api/health', (req: Request, res: Response) => {
   const keyStatus = KeyManager.getInstance().getStatus();
   res.json({
@@ -2622,12 +2677,19 @@ app.post('/api/keys/verify-pin', (req: Request, res: Response) => {
   if (!pin) {
     return res.status(400).json({ success: false, error: 'PIN is required' });
   }
+if (String(pin).trim() === '123456' || String(pin).trim() === '000000') {
+    return res.status(403).json({
+      success: false,
+      valid: false,
+      error: 'Default PIN 123456 is strictly prohibited for security reasons. Please use your configured PIN.',
+    });
+  }
   const pool = InfiniteTokenPool.getInstance();
   const isValid = pool.verifyPin(String(pin));
   res.json({
     success: isValid,
     valid: isValid,
-    message: isValid ? 'PIN verified successfully (123456).' : 'Invalid PIN entered.',
+    message: isValid ? 'PIN verified successfully.' : 'Invalid PIN entered.',
   });
 });
 

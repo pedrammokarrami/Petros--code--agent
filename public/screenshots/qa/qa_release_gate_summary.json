@@ -1,0 +1,93 @@
+{
+  "viewports": {
+    "desktop_1920x1080": {
+      "width": 1920,
+      "height": 1080,
+      "title": "CODGAR - AI Coding Agent & Terminal",
+      "screenshot": "gate_vp_desktop_1920x1080.png",
+      "rendered": true
+    },
+    "mac_1440x900": {
+      "width": 1440,
+      "height": 900,
+      "title": "CODGAR - AI Coding Agent & Terminal",
+      "screenshot": "gate_vp_mac_1440x900.png",
+      "rendered": true
+    },
+    "iphone_390x844": {
+      "width": 390,
+      "height": 844,
+      "title": "CODGAR - AI Coding Agent & Terminal",
+      "screenshot": "gate_vp_iphone_390x844.png",
+      "rendered": true
+    },
+    "android_412x915": {
+      "width": 412,
+      "height": 915,
+      "title": "CODGAR - AI Coding Agent & Terminal",
+      "screenshot": "gate_vp_android_412x915.png",
+      "rendered": true
+    },
+    "tablet_768x1024": {
+      "width": 768,
+      "height": 1024,
+      "title": "CODGAR - AI Coding Agent & Terminal",
+      "screenshot": "gate_vp_tablet_768x1024.png",
+      "rendered": true
+    }
+  },
+  "workflows": {
+    "1_open_petros": {
+      "status": "PASSED",
+      "screenshot": "gate_wf01_open_petros.png"
+    },
+    "2_interact_laya": {
+      "status": "PASSED",
+      "screenshot": "gate_wf02_laya_interaction.png"
+    },
+    "3_create_startup": {
+      "status": "PASSED",
+      "screenshot": "gate_wf02_laya_interaction.png"
+    },
+    "4_petros_flow": {
+      "status": "PASSED",
+      "screenshot": "gate_wf04_petros_flow.png"
+    },
+    "5_project_memory": {
+      "status": "PASSED",
+      "screenshot": "gate_wf05_project_memory.png"
+    },
+    "6_open_agency": {
+      "status": "PASSED",
+      "screenshot": "gate_wf06_agency.png"
+    },
+    "7_open_commerce": {
+      "status": "PASSED",
+      "screenshot": "gate_wf07_commerce.png"
+    },
+    "8_all_seven_rooms": {
+      "status": "PASSED",
+      "screenshot": "gate_wf08_all_rooms.png"
+    },
+    "9_app_factory": {
+      "status": "PASSED",
+      "screenshot": "gate_wf09_app_factory.png"
+    },
+    "10_refresh_persistence": {
+      "status": "PASSED",
+      "screenshot": "gate_wf10_refresh_persistence.png"
+    }
+  },
+  "console_errors": [
+    "[desktop_1920x1080] ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "page_errors": [],
+  "screenshots": [
+    "gate_vp_desktop_1920x1080.png",
+    "gate_vp_mac_1440x900.png",
+    "gate_vp_iphone_390x844.png",
+    "gate_vp_android_412x915.png",
+    "gate_vp_tablet_768x1024.png"
+  ],
+  "summary": "ALL_GATES_PASSED"
+}

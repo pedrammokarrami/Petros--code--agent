@@ -13,6 +13,7 @@ import {
   Volume2,
   VolumeX,
   Workflow,
+  LogOut,
 } from 'lucide-react';
 import { LuminousPointCloudCanvas } from './LuminousPointCloudCanvas';
 import { LayaWelcomeRoom } from './LayaWelcomeRoom';
@@ -29,6 +30,8 @@ interface Props {
   onToggleLegacy?: () => void;
   language?: string;
   onLanguageChange?: (lang: string) => void;
+  walletSession?: { sessionId: string; walletAddress: string; projectSlug: string } | null;
+  onLogout?: () => void;
 }
 
 export type CityRoom =
@@ -45,10 +48,13 @@ export function PetrosCityShell({
   onToggleLegacy,
   language = 'en',
   onLanguageChange,
+  walletSession,
+  onLogout,
 }: Props) {
   const [activeRoom, setActiveRoom] = useState<CityRoom>('welcome');
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const [ecosystemState, setEcosystemState] = useState<string>('CONNECTING');
+  const [creditBalance, setCreditBalance] = useState<any>(null);
   const [messages, setMessages] = useState<Message[]>(() => {
     try {
       const saved = localStorage.getItem('petros_city_laya_history');
@@ -58,6 +64,19 @@ export function PetrosCityShell({
   });
   const [inputText, setInputText] = useState<string>('');
   const isFa = language === 'fa';
+
+  useEffect(() => {
+    if (walletSession?.sessionId) {
+      fetch('/api/credit/balance', {
+        headers: { Authorization: `Bearer ${walletSession.sessionId}` },
+      })
+        .then((r) => r.json())
+        .then((d) => {
+          if (d.success) setCreditBalance(d);
+        })
+        .catch(() => {});
+    }
+  }, [walletSession]);
 
   useEffect(() => {
     try {
@@ -214,6 +233,29 @@ export function PetrosCityShell({
             <Shield className="w-3 h-3 text-[#4FB8FF]" />
             <span>ZERO-COST</span>
           </div>
+
+          {/* Wallet Identity & Credit Allowance */}
+          {walletSession && (
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-700/80 text-xs font-mono">
+              <div className="w-2 h-2 rounded-full bg-emerald-400" />
+              <span className="text-blue-300 font-semibold" title={walletSession.walletAddress}>
+                {walletSession.walletAddress.slice(0, 6)}...{walletSession.walletAddress.slice(-4)}
+              </span>
+              <span className="text-slate-500">|</span>
+              <span className="text-amber-300 text-[11px]" title="Daily Credit Allowance">
+                {creditBalance ? `${Math.round(creditBalance.remainingSeconds / 3600)}h left` : '8h left'}
+              </span>
+              {onLogout && (
+                <button
+                  onClick={onLogout}
+                  title={isFa ? 'خروج از کیف پول' : 'Disconnect Wallet'}
+                  className="ml-1 text-slate-400 hover:text-rose-400 transition cursor-pointer"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+          )}
 
           {/* Language Toggle */}
           {onLanguageChange && (

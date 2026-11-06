@@ -40,6 +40,7 @@ const DAEMON_URLS = [
   'http://127.0.0.1:20129',
   'http://127.0.0.1:20130',
   'http://127.0.0.1:20132',
+  'http://127.0.0.1:11434',
 ];
 
 const POLL_POST = process.env.FREE_PROVIDER_URL || 'https://text.pollinations.ai/openai';
@@ -90,7 +91,7 @@ function extractContent(data: any): string | null {
 async function tryDaemon(base: string, body: ChatRequest): Promise<{ content: string; backend: string }> {
   const data = await postJson(
     `${base}/v1/chat/completions`,
-    { model: body.model || 'auto', messages: body.messages, max_tokens: body.max_tokens ?? 3500, temperature: body.temperature ?? 0.3 },
+    { model: (base.includes('11434') && (!body.model || body.model === 'auto')) ? 'qwen3:1.7b' : (body.model || 'auto'), messages: body.messages, max_tokens: body.max_tokens ?? 3500, temperature: body.temperature ?? 0.3 },
     60000
   );
   const content = extractContent(data);

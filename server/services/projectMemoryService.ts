@@ -104,3 +104,43 @@ export function saveProjectMemory(workspaceRoot: string, update: Partial<Project
   }
   return updated;
 }
+
+export function formatMemoryContextForPrompt(workspaceRoot: string): string {
+  const mem = getProjectMemory(workspaceRoot);
+  const su = mem.startup;
+  const recentDecisions = mem.decisions.slice(-5).map(d => `- [${d.category}] ${d.title}: ${d.reason}`).join('\n');
+  const activeMilestones = mem.milestones.filter(m => !m.done).slice(0, 4).map(m => `- [${m.category}] ${m.title}`).join('\n');
+
+  return `=== PETROS PERSISTENT PROJECT MEMORY (ACTIVE STARTUP CONTEXT) ===
+Startup Name: ${su.name}
+Industry: ${su.industry} | Model: ${su.businessModel} | Stage: ${su.stage}
+Value Proposition: ${su.valueProp}
+Target Customer: ${su.targetCustomer}
+
+Recent Project Decisions:
+${recentDecisions || 'None recorded yet.'}
+
+Active Milestones:
+${activeMilestones || 'All key milestones achieved.'}
+==================================================================`;
+}
+
+export function recordStartupDecision(
+  workspaceRoot: string,
+  title: string,
+  reason: string,
+  category: string = 'architecture'
+): ProjectMemory {
+  const mem = getProjectMemory(workspaceRoot);
+  const newDecision = {
+    id: `d-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+    title,
+    reason,
+    category,
+    timestamp: new Date().toISOString(),
+  };
+  return saveProjectMemory(workspaceRoot, {
+    decisions: [...mem.decisions, newDecision],
+  });
+}
+

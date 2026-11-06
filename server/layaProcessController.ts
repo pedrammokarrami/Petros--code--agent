@@ -93,6 +93,9 @@ export class LayaProcessController {
           PATH: `${process.env.PATH}:${path.join(this.homeDir, '.local', 'bin')}:/usr/local/bin:/opt/homebrew/bin`
         }
       });
+      proc.on('error', (err) => {
+        console.warn('[Laya Controller] ⚠️ OmniRoute spawn handled safely:', err.message);
+      });
       proc.unref();
       console.log('[Laya Controller] ✅ OmniRoute daemon refreshed.');
       return true;

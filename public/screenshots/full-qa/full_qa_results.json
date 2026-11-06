@@ -1,0 +1,69 @@
+{
+  "timestamp": 1793999393.6405385,
+  "sections": {
+    "wallet_lifecycle": {
+      "status": "VERIFIED"
+    },
+    "squad_orchestrator": {
+      "status": "VERIFIED",
+      "runId": "run-1793999474942-ikhui"
+    },
+    "app_factory": {
+      "status": "VERIFIED",
+      "exportPath": "C:\\Users\\ELI\\Desktop\\petros\\apps\\generated\\petros-full-qa-app"
+    },
+    "memory_isolation_credits": {
+      "status": "VERIFIED"
+    }
+  },
+  "viewports": {
+    "mobile_iphone_390x844": {
+      "status": "VERIFIED",
+      "screenshot": "viewport_mobile_iphone_390x844.png"
+    },
+    "mobile_promax_430x932": {
+      "status": "VERIFIED",
+      "screenshot": "viewport_mobile_promax_430x932.png"
+    },
+    "tablet_ipad_768x1024": {
+      "status": "VERIFIED",
+      "screenshot": "viewport_tablet_ipad_768x1024.png"
+    },
+    "desktop_laptop_1366x768": {
+      "status": "VERIFIED",
+      "screenshot": "viewport_desktop_laptop_1366x768.png"
+    },
+    "desktop_fhd_1920x1080": {
+      "status": "VERIFIED",
+      "screenshot": "viewport_desktop_fhd_1920x1080.png"
+    }
+  },
+  "scenarios": {
+    "sc1_ecommerce": {
+      "title": "AI E-Commerce Supply Chain",
+      "status": "VERIFIED",
+      "screenshot": "qa_scenario_sc1_ecommerce.png"
+    },
+    "sc2_health_logistics": {
+      "title": "Pharma Cold-Chain Logistics",
+      "status": "VERIFIED",
+      "screenshot": "qa_scenario_sc2_health_logistics.png"
+    },
+    "sc3_fintech_saas": {
+      "title": "FinTech SaaS CRM",
+      "status": "VERIFIED",
+      "screenshot": "qa_scenario_sc3_fintech_saas.png"
+    },
+    "sc4_marketing_agency": {
+      "title": "Automated Marketing Agency",
+      "status": "VERIFIED",
+      "screenshot": "qa_scenario_sc4_marketing_agency.png"
+    },
+    "sc5_iot_hardware": {
+      "title": "Clean Air IoT Hardware",
+      "status": "VERIFIED",
+      "screenshot": "qa_scenario_sc5_iot_hardware.png"
+    }
+  },
+  "verdict": "SUCCESS"
+}

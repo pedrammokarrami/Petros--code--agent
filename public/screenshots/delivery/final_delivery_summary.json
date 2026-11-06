@@ -1,0 +1,50 @@
+{
+  "timestamp": 1793998515.579548,
+  "steps": {
+    "step_01_entry": {
+      "status": "PASSED",
+      "screenshot": "step_01_wallet_entry.png"
+    },
+    "step_02_mnemonic": {
+      "status": "PASSED",
+      "screenshot": "step_02_wallet_mnemonic.png"
+    },
+    "step_04_laya_entry": {
+      "status": "PASSED",
+      "screenshot": "step_04_laya_direct_entry.png"
+    },
+    "step_06_laya_response": {
+      "status": "PASSED",
+      "screenshot": "step_06_laya_persian_response.png"
+    },
+    "step_07_10_agent_squad": {
+      "status": "PASSED",
+      "runId": "run-1793998537844-9o5ko"
+    },
+    "step_11_memory": {
+      "status": "PASSED"
+    },
+    "step_12_refresh": {
+      "status": "PASSED",
+      "screenshot": "step_12_page_refresh.png"
+    },
+    "step_13_logout": {
+      "status": "PASSED",
+      "screenshot": "step_13_wallet_logout.png"
+    },
+    "step_15_isolation": {
+      "status": "PASSED"
+    },
+    "step_16_credits": {
+      "status": "PASSED"
+    },
+    "step_17_zero_cost": {
+      "status": "PASSED",
+      "spend": "$0.00"
+    },
+    "step_18_clean_ui": {
+      "status": "PASSED"
+    }
+  },
+  "verdict": "SUCCESS"
+}

@@ -30,3 +30,5 @@ release/
 Codgar-Ultimate-Core/release/
 
 .petros_pin
+.petros*
+*.enc.json

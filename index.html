@@ -673,7 +673,7 @@
 
 
 <!-- 🌟 Raycast / Apple Sequoia Workspace Launcher (English Default) 🌟 -->
-<div id="yodaw-project-screen" style="position:fixed; inset:0; z-index:999999; display:flex; align-items:center; justify-content:center; background:radial-gradient(circle at 50% 20%, rgba(200, 225, 255, 0.8), rgba(230, 242, 255, 0.95) 70%, #edf5fc 100%); backdrop-filter:blur(30px); -webkit-backdrop-filter:blur(30px); font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif; padding:20px; box-sizing:border-box; direction:ltr;">
+<div id="yodaw-project-screen" style="position:fixed; inset:0; z-index:999999; display:none !important; align-items:center; justify-content:center; background:radial-gradient(circle at 50% 20%, rgba(200, 225, 255, 0.8), rgba(230, 242, 255, 0.95) 70%, #edf5fc 100%); backdrop-filter:blur(30px); -webkit-backdrop-filter:blur(30px); font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif; padding:20px; box-sizing:border-box; direction:ltr;">
   
   <div style="background:rgba(255, 255, 255, 0.88); backdrop-filter:blur(40px); border:1px solid rgba(255, 255, 255, 0.9); border-radius:24px; width:100%; max-width:820px; box-shadow:0 30px 70px -15px rgba(15, 23, 42, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.8); overflow:hidden; display:flex; flex-direction:column;">
     
@@ -935,7 +935,7 @@ async function fetchProjects() {
 }
 
 function showProjectGateway() {
-  document.getElementById('yodaw-project-screen').style.display = 'flex';
+  return; // Disabled in unified wallet storyboard
   const badge = document.getElementById('yodaw-top-project-badge');
   if (badge) badge.style.display = 'none';
   fetchProjects();
@@ -996,7 +996,7 @@ window.addEventListener('DOMContentLoaded', () => {
   if (confirmed === 'true') {
     hideProjectGateway();
   } else {
-    showProjectGateway();
+    hideProjectGateway();
   }
 });
 </script>

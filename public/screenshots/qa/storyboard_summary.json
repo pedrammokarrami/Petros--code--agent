@@ -1,0 +1,25 @@
+{
+  "scenes": {
+    "scene_1_wallet_entry": {
+      "status": "PASSED",
+      "screenshot": "storyboard_01_wallet_entry.png"
+    },
+    "scene_1a_mnemonic": {
+      "status": "PASSED",
+      "screenshot": "storyboard_02_wallet_created_mnemonic.png"
+    },
+    "scene_2_laya_direct_entry": {
+      "status": "PASSED",
+      "screenshot": "storyboard_03_laya_direct_entry.png"
+    },
+    "scene_3_laya_blueprint": {
+      "status": "PASSED",
+      "screenshot": "storyboard_04_laya_startup_blueprint.png"
+    },
+    "scene_4_wallet_disconnect": {
+      "status": "PASSED",
+      "screenshot": "storyboard_05_wallet_logged_out.png"
+    }
+  },
+  "status": "SUCCESS"
+}

@@ -40,6 +40,10 @@ export function ContentStudioRoom({ isFa = false }: Props) {
   const [deviceViewport, setDeviceViewport] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [committing, setCommitting] = useState<boolean>(false);
   const [commitSuccess, setCommitSuccess] = useState<boolean>(false);
+  const [compiling, setCompiling] = useState<boolean>(false);
+  const [compileStatus, setCompileStatus] = useState<string | null>(null);
+  const [exporting, setExporting] = useState<boolean>(false);
+  const [exportSuccess, setExportSuccess] = useState<string | null>(null);
 
   const sampleArtifacts: ArtifactItem[] = [
     {
@@ -97,6 +101,56 @@ export function ContentStudioRoom({ isFa = false }: Props) {
   ];
 
   const activeArt = selectedArtifact || sampleArtifacts[0];
+  const [activeCode, setActiveCode] = useState<string>(sampleArtifacts[0].content);
+  const [activePreviewHtml, setActivePreviewHtml] = useState<string>(sampleArtifacts[0].previewHtml || '');
+
+  const handleValidateAndCompile = async (codeToBuild: string) => {
+    setCompiling(true);
+    setCompileStatus(null);
+    try {
+      const res = await fetch('/api/app-factory/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: codeToBuild, appName: activeArt.name }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        if (data.valid) {
+          setActivePreviewHtml(data.previewHtml);
+          setCompileStatus(data.repaired ? `🛠️ Repaired & Built in ${data.buildTimeMs}ms` : `⚡ ESBuild Validated (${data.buildTimeMs}ms)`);
+        } else {
+          setActivePreviewHtml(data.previewHtml);
+          setCompileStatus(`⚠️ Build Failed: ${data.errors?.[0]?.message || 'Syntax Error'}`);
+        }
+      }
+    } catch (err: any) {
+      setCompileStatus(`Build error: ${err.message}`);
+    } finally {
+      setCompiling(false);
+    }
+  };
+
+  const handleExportProject = async () => {
+    setExporting(true);
+    setExportSuccess(null);
+    try {
+      const appId = `petros-app-${Date.now().toString(36)}`;
+      const res = await fetch('/api/app-factory/export', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ appId, sourceCode: activeCode }),
+      });
+      const data = await res.json();
+      if (data.success && data.exportPath) {
+        setExportSuccess(`Exported to ${data.exportPath}`);
+        setTimeout(() => setExportSuccess(null), 4000);
+      }
+    } catch (err: any) {
+      setExportSuccess(`Export error: ${err.message}`);
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const handleDownload = (artifact: ArtifactItem) => {
     const blob = new Blob([artifact.content], { type: 'text/plain;charset=utf-8' });
@@ -234,7 +288,11 @@ export function ContentStudioRoom({ isFa = false }: Props) {
               return (
                 <div
                   key={art.id}
-                  onClick={() => setSelectedArtifact(art)}
+                  onClick={() => {
+                    setSelectedArtifact(art);
+                    setActiveCode(art.content);
+                    if (art.previewHtml) setActivePreviewHtml(art.previewHtml);
+                  }}
                   className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
                     isSel
                       ? 'bg-[#1F6FEB]/20 border-[#4FB8FF] text-white shadow-md'
@@ -254,8 +312,31 @@ export function ContentStudioRoom({ isFa = false }: Props) {
             })}
           </div>
 
-          {/* Direct Git Commit Button */}
-          <div className="pt-2">
+          {/* Direct Git Commit & Export Project Buttons */}
+          <div className="pt-2 space-y-2">
+            <button
+              onClick={handleExportProject}
+              disabled={exporting}
+              className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-xs font-bold text-white transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-blue-600/20"
+            >
+              {exporting ? (
+                <>
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  <span>Exporting Vite Project...</span>
+                </>
+              ) : exportSuccess ? (
+                <>
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-300" />
+                  <span className="text-emerald-200 truncate">{exportSuccess}</span>
+                </>
+              ) : (
+                <>
+                  <Code2 className="w-3.5 h-3.5" />
+                  <span>Export Full Vite Project</span>
+                </>
+              )}
+            </button>
+
             <button
               onClick={handleGitCommit}
               disabled={committing}
@@ -307,23 +388,45 @@ export function ContentStudioRoom({ isFa = false }: Props) {
             </div>
           </div>
 
+          {/* ESBuild Live Compiler Status Bar */}
+          {compileStatus && (
+            <div className="px-3 py-1.5 rounded-lg bg-black/60 border border-slate-800 text-[11px] font-mono text-cyan-300 flex items-center justify-between">
+              <span>{compileStatus}</span>
+              <span className="text-slate-500">Fast In-Memory Transpile</span>
+            </div>
+          )}
+
           {/* Sandbox Stage */}
-          <div className="flex-1 flex items-center justify-center bg-slate-950/80 rounded-xl border border-slate-800/80 p-4 min-h-[460px] overflow-hidden">
-            {viewMode === 'preview' && activeArt.previewHtml ? (
+          <div className="flex-1 flex flex-col items-center justify-center bg-slate-950/80 rounded-xl border border-slate-800/80 p-4 min-h-[460px] overflow-hidden">
+            {viewMode === 'preview' ? (
               <div
                 className={`transition-all duration-300 w-full h-[460px] rounded-lg overflow-hidden border border-slate-800 shadow-2xl ${getViewportWidth()}`}
               >
                 <iframe
                   title="App Sandbox Preview"
-                  srcDoc={activeArt.previewHtml}
+                  srcDoc={activePreviewHtml || activeArt.previewHtml || '<div style="color:white;padding:20px;">Compiling...</div>'}
                   className="w-full h-full border-0 bg-black"
                   sandbox="allow-scripts"
                 />
               </div>
             ) : (
-              <pre className="w-full h-[460px] overflow-auto p-4 text-xs font-mono text-slate-200 leading-relaxed bg-[#02040A] rounded-lg border border-slate-900 select-text">
-                {activeArt.content}
-              </pre>
+              <div className="w-full h-[460px] flex flex-col space-y-2">
+                <textarea
+                  value={activeCode}
+                  onChange={(e) => setActiveCode(e.target.value)}
+                  className="w-full flex-1 p-4 text-xs font-mono text-slate-200 leading-relaxed bg-[#02040A] rounded-lg border border-slate-900 focus:outline-none focus:border-[#4FB8FF] resize-none select-text"
+                />
+                <div className="flex justify-end">
+                  <button
+                    onClick={() => handleValidateAndCompile(activeCode)}
+                    disabled={compiling}
+                    className="px-4 py-2 rounded-xl bg-[#1F6FEB] hover:bg-blue-600 disabled:opacity-50 text-white font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-blue-500/20"
+                  >
+                    {compiling ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5 fill-current" />}
+                    <span>{compiling ? 'Compiling...' : 'Validate & Live Compile (ESBuild)'}</span>
+                  </button>
+                </div>
+              </div>
             )}
           </div>
         </section>

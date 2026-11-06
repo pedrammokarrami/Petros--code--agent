@@ -40,6 +40,7 @@ import { McpWebViewModal } from './components/McpWebViewModal';
 import { GmailMessageData } from './types';
 import { voiceAgent } from './services/voiceAgent';
 import { PetrosCityShell } from './components/petros-city/PetrosCityShell';
+import { WalletAuthScreen } from './components/WalletAuthScreen';
 import {
   Sparkles,
   Globe,
@@ -69,6 +70,13 @@ export default function App() {
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const [agentState, setAgentState] = useState<AgentState>('idle');
   const [activeWorker, setActiveWorker] = useState<'coder' | 'writer' | null>(null);
+  const [walletSession, setWalletSession] = useState<{ sessionId: string; walletAddress: string; projectSlug: string } | null>(() => {
+    try {
+      const saved = localStorage.getItem('petros_wallet_session');
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return null;
+  });
   const [isLegacyMode, setIsLegacyMode] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       return new URLSearchParams(window.location.search).get('legacy') === '1';
@@ -882,12 +890,32 @@ export default function App() {
     }
   };
 
+  if (!walletSession && !isLegacyMode) {
+    return (
+      <WalletAuthScreen
+        isFa={isFa}
+        onAuthenticated={(sess) => setWalletSession(sess)}
+      />
+    );
+  }
+
   if (!isLegacyMode) {
     return (
       <PetrosCityShell
         onToggleLegacy={() => setIsLegacyMode(true)}
         language={language}
         onLanguageChange={(l) => setLanguage(l as any)}
+        walletSession={walletSession}
+        onLogout={() => {
+          if (walletSession?.sessionId) {
+            fetch('/api/auth/logout', {
+              method: 'POST',
+              headers: { Authorization: `Bearer ${walletSession.sessionId}` },
+            }).catch(() => {});
+          }
+          localStorage.removeItem('petros_wallet_session');
+          setWalletSession(null);
+        }}
       />
     );
   }

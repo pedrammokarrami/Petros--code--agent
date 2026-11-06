@@ -34,6 +34,11 @@ interface AgentCard {
 }
 
 export function AgencyRoom({ isFa = false }: Props) {
+  const [activeTab, setActiveTab] = useState<'squads' | 'single'>('squads');
+  const [squadPrompt, setSquadPrompt] = useState<string>('Build an autonomous AI SaaS analytics platform with subscription economics');
+  const [squadRun, setSquadRun] = useState<any>(null);
+  const [squadLoading, setSquadLoading] = useState<boolean>(false);
+
   const [selectedAgent, setSelectedAgent] = useState<string>('engineer');
   const [taskPrompt, setTaskPrompt] = useState<string>('');
   const [executing, setExecuting] = useState<boolean>(false);
@@ -166,6 +171,52 @@ export function AgencyRoom({ isFa = false }: Props) {
     }
   };
 
+  const handleStartSquad = async () => {
+    if (!squadPrompt.trim() || squadLoading) return;
+    setSquadLoading(true);
+    try {
+      const res = await fetch('/api/squad/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          squadId: 'squad-startup-launch',
+          missionPrompt: squadPrompt,
+        }),
+      });
+      const data = await res.json();
+      if (data.success && data.run) {
+        setSquadRun(data.run);
+      }
+    } catch (err: any) {
+      console.error(err);
+    } finally {
+      setSquadLoading(false);
+    }
+  };
+
+  const handleApproveSquad = async () => {
+    if (!squadRun || !squadRun.approvalToken) return;
+    setSquadLoading(true);
+    try {
+      const res = await fetch('/api/squad/approve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          runId: squadRun.runId,
+          approvalToken: squadRun.approvalToken,
+        }),
+      });
+      const data = await res.json();
+      if (data.success && data.run) {
+        setSquadRun(data.run);
+      }
+    } catch (err: any) {
+      console.error(err);
+    } finally {
+      setSquadLoading(false);
+    }
+  };
+
   const currentAgent = agents.find((a) => a.id === selectedAgent) || agents[0];
 
   return (
@@ -194,7 +245,195 @@ export function AgencyRoom({ isFa = false }: Props) {
         </div>
       </div>
 
-      {/* Dangerous Task Approval Modal */}
+      {/* Navigation Mode Tabs */}
+      <div className="flex items-center gap-2 border-b border-slate-800 pb-2">
+        <button
+          onClick={() => setActiveTab('squads')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+            activeTab === 'squads'
+              ? 'bg-[#1F6FEB] text-white shadow-lg shadow-blue-600/30'
+              : 'bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800'
+          }`}
+        >
+          <Sparkles className="w-4 h-4 text-cyan-300" />
+          <span>{isFa ? 'ماموریت تیم‌های خودکار (CrewAI Squads)' : 'Autonomous Squad Missions (CrewAI Pattern)'}</span>
+        </button>
+        <button
+          onClick={() => setActiveTab('single')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+            activeTab === 'single'
+              ? 'bg-[#1F6FEB] text-white shadow-lg shadow-blue-600/30'
+              : 'bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800'
+          }`}
+        >
+          <Users className="w-4 h-4" />
+          <span>{isFa ? 'ایجنت‌های انفرادی' : 'Individual Agent Consoles'}</span>
+        </button>
+      </div>
+
+      {activeTab === 'squads' ? (
+        <div className="space-y-6">
+          {/* Squad Mission Control Panel */}
+          <div className="p-6 rounded-2xl bg-[#060D1A]/95 border border-[#1F6FEB]/30 shadow-2xl space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+              <div>
+                <h3 className="text-base font-bold text-white flex items-center gap-2">
+                  <Flame className="w-5 h-5 text-amber-400" />
+                  <span>Autonomous Startup Launch Squad</span>
+                </h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Multi-agent pipeline: Strategist → Architect → Engineer (Approval Guarded) → Growth Lead
+                </p>
+              </div>
+              <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono">
+                REAL HANDOFFS ACTIVE
+              </span>
+            </div>
+
+            {/* Squad Mission Form */}
+            <div className="space-y-3">
+              <label className="text-xs font-semibold text-slate-300">
+                {isFa ? 'ماموریت کلیدی استارتاپ:' : 'Core Startup Mission Objective:'}
+              </label>
+              <textarea
+                rows={2}
+                value={squadPrompt}
+                onChange={(e) => setSquadPrompt(e.target.value)}
+                placeholder="Describe your startup objective..."
+                className="w-full bg-slate-950 border border-slate-800 focus:border-[#4FB8FF] rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none transition-all resize-none"
+              />
+              <div className="flex justify-end">
+                <button
+                  onClick={handleStartSquad}
+                  disabled={squadLoading || !squadPrompt.trim()}
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs transition-all flex items-center gap-2 cursor-pointer shadow-lg shadow-blue-500/20 disabled:opacity-50"
+                >
+                  {squadLoading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5 fill-current" />}
+                  <span>{squadLoading ? 'Orchestrating Squad...' : 'Launch Autonomous Squad Mission'}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Active Squad Mission Progress */}
+          {squadRun && (
+            <div className="p-6 rounded-2xl bg-[#060D1A]/95 border border-slate-800 shadow-2xl space-y-6 animate-fadeIn">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-3 text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-white font-mono">RUN ID: {squadRun.runId}</span>
+                  <span className={`px-2 py-0.5 rounded text-[11px] font-mono uppercase ${
+                    squadRun.status === 'completed'
+                      ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
+                      : squadRun.status === 'paused_approval'
+                      ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30 animate-pulse'
+                      : 'bg-blue-500/10 text-blue-400 border border-blue-500/30'
+                  }`}>
+                    STATUS: {squadRun.status}
+                  </span>
+                </div>
+                <span className="text-slate-400 font-mono text-[11px]">
+                  Updated: {new Date(squadRun.updatedAt).toLocaleTimeString()}
+                </span>
+              </div>
+
+              {/* Human Approval Required Alert Box */}
+              {squadRun.status === 'paused_approval' && squadRun.approvalToken && (
+                <div className="p-5 rounded-xl bg-amber-950/70 border-2 border-amber-500/80 text-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-2xl">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
+                      <AlertTriangle className="w-5 h-5 text-amber-400" />
+                      <span>Security Gate: Human Authorization Required</span>
+                    </div>
+                    <p className="text-xs text-amber-300">
+                      Engineering Agent has finished code synthesis and requires permission to commit the MVP artifact to disk.
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleApproveSquad}
+                    disabled={squadLoading}
+                    className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs transition-all cursor-pointer shadow-lg shadow-amber-500/30 shrink-0"
+                  >
+                    {squadLoading ? 'Authorizing...' : 'Approve & Emit Code (RUN)'}
+                  </button>
+                </div>
+              )}
+
+              {/* Multi-Agent Stage Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Stage 1: Strategy */}
+                <div className={`p-4 rounded-xl border ${squadRun.stageResults['stage-strategy'] ? 'bg-slate-900/80 border-emerald-500/40 text-slate-200' : 'bg-slate-950/60 border-slate-800 text-slate-500'}`}>
+                  <div className="flex items-center justify-between text-xs font-bold mb-2">
+                    <span className="flex items-center gap-1.5">
+                      <Layers className="w-4 h-4 text-blue-400" />
+                      <span>1. Strategic Market Blueprint</span>
+                    </span>
+                    {squadRun.stageResults['stage-strategy'] ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <Clock className="w-4 h-4" />}
+                  </div>
+                  <pre className="text-[11px] font-mono whitespace-pre-wrap max-h-32 overflow-y-auto leading-relaxed bg-black/40 p-2.5 rounded-lg">
+                    {squadRun.stageResults['stage-strategy']?.output || 'Pending execution...'}
+                  </pre>
+                </div>
+
+                {/* Stage 2: Architecture */}
+                <div className={`p-4 rounded-xl border ${squadRun.stageResults['stage-architecture'] ? 'bg-slate-900/80 border-emerald-500/40 text-slate-200' : 'bg-slate-950/60 border-slate-800 text-slate-500'}`}>
+                  <div className="flex items-center justify-between text-xs font-bold mb-2">
+                    <span className="flex items-center gap-1.5">
+                      <FolderTree className="w-4 h-4 text-cyan-400" />
+                      <span>2. Technical Architecture & Schemas</span>
+                    </span>
+                    {squadRun.stageResults['stage-architecture'] ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <Clock className="w-4 h-4" />}
+                  </div>
+                  <pre className="text-[11px] font-mono whitespace-pre-wrap max-h-32 overflow-y-auto leading-relaxed bg-black/40 p-2.5 rounded-lg">
+                    {squadRun.stageResults['stage-architecture']?.output || 'Pending execution...'}
+                  </pre>
+                </div>
+
+                {/* Stage 3: Engineering */}
+                <div className={`p-4 rounded-xl border ${squadRun.stageResults['stage-engineering'] ? 'bg-slate-900/80 border-emerald-500/40 text-slate-200' : 'bg-slate-950/60 border-slate-800 text-slate-500'}`}>
+                  <div className="flex items-center justify-between text-xs font-bold mb-2">
+                    <span className="flex items-center gap-1.5">
+                      <Terminal className="w-4 h-4 text-emerald-400" />
+                      <span>3. Full-Stack MVP Engineering</span>
+                    </span>
+                    {squadRun.stageResults['stage-engineering'] ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <Clock className="w-4 h-4" />}
+                  </div>
+                  <pre className="text-[11px] font-mono whitespace-pre-wrap max-h-32 overflow-y-auto leading-relaxed bg-black/40 p-2.5 rounded-lg">
+                    {squadRun.stageResults['stage-engineering']?.output || (squadRun.status === 'paused_approval' ? 'Awaiting Human Approval...' : 'Pending execution...')}
+                  </pre>
+                  {squadRun.stageResults['stage-engineering']?.artifactPath && (
+                    <p className="text-[10px] text-emerald-400 mt-2 font-mono">
+                      ✓ Artifact saved: {squadRun.stageResults['stage-engineering'].artifactPath}
+                    </p>
+                  )}
+                </div>
+
+                {/* Stage 4: Growth */}
+                <div className={`p-4 rounded-xl border ${squadRun.stageResults['stage-growth'] ? 'bg-slate-900/80 border-emerald-500/40 text-slate-200' : 'bg-slate-950/60 border-slate-800 text-slate-500'}`}>
+                  <div className="flex items-center justify-between text-xs font-bold mb-2">
+                    <span className="flex items-center gap-1.5">
+                      <Sparkles className="w-4 h-4 text-purple-400" />
+                      <span>4. Go-To-Market & Launch Copy</span>
+                    </span>
+                    {squadRun.stageResults['stage-growth'] ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <Clock className="w-4 h-4" />}
+                  </div>
+                  <pre className="text-[11px] font-mono whitespace-pre-wrap max-h-32 overflow-y-auto leading-relaxed bg-black/40 p-2.5 rounded-lg">
+                    {squadRun.stageResults['stage-growth']?.output || 'Pending execution...'}
+                  </pre>
+                </div>
+              </div>
+
+              {/* Trace Logs Stream */}
+              <div className="p-4 rounded-xl bg-black border border-slate-900 text-xs font-mono space-y-1 max-h-48 overflow-y-auto">
+                <span className="text-slate-500 block mb-1">=== SQUAD ORCHESTRATION TRACE LOGS ===</span>
+                {squadRun.logs.map((log: string, idx: number) => (
+                  <p key={idx} className="text-slate-400 leading-relaxed">{log}</p>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        <>
       {pendingApproval && (
         <div className="p-4 rounded-2xl bg-amber-950/70 border border-amber-500/60 text-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-fadeIn shadow-2xl">
           <div className="flex items-center gap-3">
@@ -378,6 +617,8 @@ export function AgencyRoom({ isFa = false }: Props) {
           </div>
         </section>
       </div>
+      </>
+      )}
     </div>
   );
 }

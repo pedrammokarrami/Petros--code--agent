@@ -12,6 +12,7 @@ import {
   Shield,
   Volume2,
   VolumeX,
+  Workflow,
 } from 'lucide-react';
 import { LuminousPointCloudCanvas } from './LuminousPointCloudCanvas';
 import { LayaWelcomeRoom } from './LayaWelcomeRoom';
@@ -21,6 +22,7 @@ import { ControlCenterRoom } from './ControlCenterRoom';
 import { LaboratoryRoom } from './LaboratoryRoom';
 import { EngineeringRoom } from './EngineeringRoom';
 import { ContentStudioRoom } from './ContentStudioRoom';
+import { PetrosFlowRoom } from './PetrosFlowRoom';
 import { Message } from '../../types';
 
 interface Props {
@@ -29,7 +31,15 @@ interface Props {
   onLanguageChange?: (lang: string) => void;
 }
 
-export type CityRoom = 'welcome' | 'engineering' | 'control' | 'laboratory' | 'agency' | 'commerce' | 'studio';
+export type CityRoom =
+  | 'welcome'
+  | 'engineering'
+  | 'control'
+  | 'laboratory'
+  | 'agency'
+  | 'commerce'
+  | 'studio'
+  | 'flow';
 
 export function PetrosCityShell({
   onToggleLegacy,
@@ -98,7 +108,8 @@ export function PetrosCityShell({
       });
 
       const data = await res.json();
-      const reply = data.reply || data.output || data.text || (data.success ? 'Task analyzed.' : 'Processed request.');
+      const reply =
+        data.reply || data.output || data.text || (data.success ? 'Task analyzed.' : 'Processed request.');
 
       const agentMsg: Message = {
         id: `agent-${Date.now()}`,
@@ -126,7 +137,8 @@ export function PetrosCityShell({
     { id: 'agency', label: isFa ? 'آژانس هوشمند' : 'Agency', icon: Layers },
     { id: 'commerce', label: isFa ? 'تجارت و مالی' : 'Commerce', icon: ShoppingBag },
     { id: 'engineering', label: isFa ? 'مهندسی' : 'Engineering', icon: Terminal },
-    { id: 'studio', label: isFa ? 'استودیو محتوا' : 'Content Studio', icon: Sparkles },
+    { id: 'studio', label: isFa ? 'استودیو و اپ' : 'App Factory', icon: Sparkles },
+    { id: 'flow', label: isFa ? 'جریان‌های خودکار' : 'Petros Flow', icon: Workflow },
     { id: 'control', label: isFa ? 'مرکز فرماندهی' : 'Control Center', icon: Server },
   ];
 
@@ -265,6 +277,7 @@ export function PetrosCityShell({
         {activeRoom === 'commerce' && <CommerceRoom isFa={isFa} />}
         {activeRoom === 'engineering' && <EngineeringRoom isFa={isFa} />}
         {activeRoom === 'studio' && <ContentStudioRoom isFa={isFa} />}
+        {activeRoom === 'flow' && <PetrosFlowRoom isFa={isFa} />}
         {activeRoom === 'control' && <ControlCenterRoom isFa={isFa} />}
       </main>
     </div>

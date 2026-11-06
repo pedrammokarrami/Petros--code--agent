@@ -1,3 +1,5 @@
+import { getProjectMemory, saveProjectMemory } from './server/services/projectMemoryService';
+import { flowEngine } from './server/services/flowExecutionService';
 
 
 
@@ -684,6 +686,45 @@ function resolveSafePath(userPath: string): string {
 
 
 
+
+
+// --- STARTUP WORKSPACE MEMORY APIS ---
+app.get('/api/project/memory', (req: Request, res: Response) => {
+  try {
+    const memory = getProjectMemory(WORKSPACE_ROOT);
+    res.json({ success: true, memory });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err?.message });
+  }
+});
+
+app.post('/api/project/memory', (req: Request, res: Response) => {
+  try {
+    const memory = saveProjectMemory(WORKSPACE_ROOT, req.body || {});
+    res.json({ success: true, memory });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err?.message });
+  }
+});
+
+// --- PETROS FLOW AUTOMATION APIS ---
+app.get('/api/flow/list', (req: Request, res: Response) => {
+  res.json({ success: true, flows: flowEngine.getFlows() });
+});
+
+app.post('/api/flow/execute', async (req: Request, res: Response) => {
+  try {
+    const { flowId = 'flow-startup-onboarding', payload } = req.body;
+    const result = await flowEngine.executeFlow(flowId, payload || {});
+    res.json({ success: true, result });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err?.message });
+  }
+});
+
+app.get('/api/flow/logs', (req: Request, res: Response) => {
+  res.json({ success: true, logs: flowEngine.getLogs() });
+});
 
 app.get('/api/project/info', (req: Request, res: Response) => {
   try {

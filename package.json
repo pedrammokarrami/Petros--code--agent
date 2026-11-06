@@ -13,7 +13,8 @@
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
     "setup": "cp -n .env.example .env 2>/dev/null || true && npm install",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "test:acceptance": "node scripts/test_all_0_to_100.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.127.0",

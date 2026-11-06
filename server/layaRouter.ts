@@ -249,6 +249,13 @@ export function startLayaRouter(workspaceRoot: string, port = 20131): http.Serve
       send(500, { error: e?.message || String(e) });
     }
   });
+  server.on('error', (err: any) => {
+    if (err?.code === 'EADDRINUSE') {
+      console.log(`[Laya Router] Port ${port} already active; reusing existing gateway.`);
+    } else {
+      console.error('[Laya Router] Server error:', err?.message || err);
+    }
+  });
   server.listen(port, '127.0.0.1', () => {
     console.log(`[Laya Router] REAL gateway listening on http://127.0.0.1:${port} (models via routers, never direct)`);
   });

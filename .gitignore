@@ -28,3 +28,5 @@ solve_everything_permanently.py
 node_modules/
 release/
 Codgar-Ultimate-Core/release/
+
+.petros_pin

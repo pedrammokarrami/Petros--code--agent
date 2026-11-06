@@ -14,12 +14,14 @@ import {
   VolumeX,
 } from 'lucide-react';
 import { LuminousPointCloudCanvas } from './LuminousPointCloudCanvas';
+import { LayaWelcomeRoom } from './LayaWelcomeRoom';
+import { AgencyRoom } from './AgencyRoom';
+import { CommerceRoom } from './CommerceRoom';
 import { ControlCenterRoom } from './ControlCenterRoom';
 import { LaboratoryRoom } from './LaboratoryRoom';
 import { EngineeringRoom } from './EngineeringRoom';
 import { ContentStudioRoom } from './ContentStudioRoom';
-import { YodawWorkspace } from '../YodawWorkspace';
-import { Message, AgentMode } from '../../types';
+import { Message } from '../../types';
 
 interface Props {
   onToggleLegacy?: () => void;
@@ -37,9 +39,21 @@ export function PetrosCityShell({
   const [activeRoom, setActiveRoom] = useState<CityRoom>('welcome');
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const [ecosystemState, setEcosystemState] = useState<string>('CONNECTING');
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    try {
+      const saved = localStorage.getItem('petros_city_laya_history');
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return [];
+  });
   const [inputText, setInputText] = useState<string>('');
   const isFa = language === 'fa';
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('petros_city_laya_history', JSON.stringify(messages));
+    } catch {}
+  }, [messages]);
 
   useEffect(() => {
     const checkState = async () => {
@@ -58,7 +72,7 @@ export function PetrosCityShell({
     return () => clearInterval(interval);
   }, []);
 
-  const handleSendMessage = async (text: string, options?: any) => {
+  const handleSendMessage = async (text: string) => {
     if (!text.trim() || isExecuting) return;
 
     const userMsg: Message = {
@@ -84,7 +98,7 @@ export function PetrosCityShell({
       });
 
       const data = await res.json();
-      const reply = data.reply || data.output || (data.success ? 'Task analyzed.' : 'Processed request.');
+      const reply = data.reply || data.output || data.text || (data.success ? 'Task analyzed.' : 'Processed request.');
 
       const agentMsg: Message = {
         id: `agent-${Date.now()}`,
@@ -108,12 +122,12 @@ export function PetrosCityShell({
 
   const rooms = [
     { id: 'welcome', label: isFa ? 'لایا / خوش‌آمد' : 'Laya Welcome', icon: Compass },
-    { id: 'engineering', label: isFa ? 'مهندسی' : 'Engineering', icon: Terminal },
-    { id: 'control', label: isFa ? 'مرکز فرماندهی' : 'Control Center', icon: Server },
     { id: 'laboratory', label: isFa ? 'آزمایشگاه' : 'Laboratory', icon: Activity },
     { id: 'agency', label: isFa ? 'آژانس هوشمند' : 'Agency', icon: Layers },
-    { id: 'commerce', label: isFa ? 'فروشگاه ابزار' : 'Commerce', icon: ShoppingBag },
+    { id: 'commerce', label: isFa ? 'تجارت و مالی' : 'Commerce', icon: ShoppingBag },
+    { id: 'engineering', label: isFa ? 'مهندسی' : 'Engineering', icon: Terminal },
     { id: 'studio', label: isFa ? 'استودیو محتوا' : 'Content Studio', icon: Sparkles },
+    { id: 'control', label: isFa ? 'مرکز فرماندهی' : 'Control Center', icon: Server },
   ];
 
   return (
@@ -129,18 +143,20 @@ export function PetrosCityShell({
             <span className="font-bold text-white text-sm">P</span>
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-sm font-bold tracking-wider text-white">PETROS CITY</h1>
-              <span className="text-[10px] px-1.5 py-0.2 rounded bg-blue-950/80 border border-[#4FB8FF]/30 text-[#4FB8FF] font-mono">
-                v4.0 PROD
+            <div className="flex items-center gap-1.5">
+              <span className="font-bold tracking-tight text-white text-sm">PETROS CITY</span>
+              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-blue-950/60 border border-blue-500/30 text-[#4FB8FF]">
+                v4.0
               </span>
             </div>
-            <p className="text-[10px] text-slate-400">Autonomous Engineering & Operations Ecosystem</p>
+            <p className="text-[10px] text-slate-400 hidden sm:block">
+              {isFa ? 'پلتفرم جامع هوش مصنوعی ساخت استارتاپ' : 'Autonomous AI Startup Platform'}
+            </p>
           </div>
         </div>
 
-        {/* Spatial Room Switcher Pills */}
-        <nav className="hidden lg:flex items-center gap-1 bg-slate-900/60 p-1 rounded-xl border border-slate-800/80 backdrop-blur-md">
+        {/* Spatial Room Navigation Pills (Desktop) */}
+        <nav className="hidden lg:flex items-center gap-1 bg-slate-900/60 p-1 rounded-xl border border-slate-800/80 backdrop-blur-sm">
           {rooms.map((r) => {
             const Icon = r.icon;
             const isActive = activeRoom === r.id;
@@ -148,7 +164,7 @@ export function PetrosCityShell({
               <button
                 key={r.id}
                 onClick={() => setActiveRoom(r.id as CityRoom)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 cursor-pointer ${
                   isActive
                     ? 'bg-[#1F6FEB] text-white shadow-md shadow-blue-600/30'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
@@ -233,28 +249,23 @@ export function PetrosCityShell({
       {/* 3. Main Room Stage */}
       <main className="relative z-10 flex-1 flex flex-col py-4 px-2 sm:px-4 overflow-y-auto">
         {activeRoom === 'welcome' && (
-          <div className="w-full max-w-5xl mx-auto flex-1 flex flex-col justify-center items-center py-6">
-            <YodawWorkspace
-              messages={messages}
-              onSendMessage={handleSendMessage}
-              isExecuting={isExecuting}
-              onStopExecution={() => setIsExecuting(false)}
-              inputText={inputText}
-              onInputTextChange={setInputText}
-              language={(language as any) || 'en'}
-              onOpenQueue={() => setActiveRoom('agency')}
-              onOpenTerminal={() => setActiveRoom('engineering')}
-              onTogglePreview={() => setActiveRoom('studio')}
-            />
-          </div>
+          <LayaWelcomeRoom
+            isFa={isFa}
+            onNavigateRoom={setActiveRoom}
+            onSendMessage={handleSendMessage}
+            isExecuting={isExecuting}
+            messages={messages}
+            inputText={inputText}
+            onInputTextChange={setInputText}
+          />
         )}
 
-        {activeRoom === 'control' && <ControlCenterRoom isFa={isFa} />}
         {activeRoom === 'laboratory' && <LaboratoryRoom isFa={isFa} />}
+        {activeRoom === 'agency' && <AgencyRoom isFa={isFa} />}
+        {activeRoom === 'commerce' && <CommerceRoom isFa={isFa} />}
         {activeRoom === 'engineering' && <EngineeringRoom isFa={isFa} />}
         {activeRoom === 'studio' && <ContentStudioRoom isFa={isFa} />}
-        {activeRoom === 'agency' && <EngineeringRoom isFa={isFa} />}
-        {activeRoom === 'commerce' && <LaboratoryRoom isFa={isFa} />}
+        {activeRoom === 'control' && <ControlCenterRoom isFa={isFa} />}
       </main>
     </div>
   );

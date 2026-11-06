@@ -203,7 +203,7 @@ import { KeyManager } from './server/keyManager';
 import { GaifDevRouter } from './server/gaifRouter';
 import { OmniRouterWorker } from './server/workers/omniRouter';
 import { ClaudeCodeTerminal } from './server/claudeCodeTerminal';
-import { getEcosystemStatus, startSupervisorEcosystem, stopSupervisorEcosystem, executeMcpStatus } from './server/supervisorBridge';
+import { getEcosystemStatus, startSupervisorEcosystem, stopSupervisorEcosystem, executeMcpStatus, executeWorkerTask } from './server/supervisorBridge';
 import { RoutersRegistry } from './server/routersRegistry';
 import { InfiniteTokenPool } from './server/infiniteTokenPool';
 import { UniversalCompiler } from './server/universalCompiler';
@@ -351,6 +351,19 @@ app.get('/api/mcp/tools', async (req: Request, res: Response) => {
       tools: status.services.mcp.tools,
       protocolVersion: status.services.mcp.protocolVersion,
     });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err?.message });
+  }
+});
+
+app.post('/api/supervisor/execute', async (req: Request, res: Response) => {
+  try {
+    const { task, confirm } = req.body;
+    if (confirm !== 'RUN') {
+      return res.status(400).json({ success: false, error: 'Explicit user approval required (confirm must equal "RUN")' });
+    }
+    const result = await executeWorkerTask(task, confirm);
+    res.json(result);
   } catch (err: any) {
     res.status(500).json({ success: false, error: err?.message });
   }
@@ -1222,13 +1235,13 @@ async function handleAgentChat(req: Request, res: Response) {
   // === موتور هوشمند تفکیک تصویر (Flux Engine) ===
   const cleanP = (prompt || "").toLowerCase();
   const isExplicitImageHeader = prompt.includes('Image Generation Request') || /(flux|pollinations)/i.test(prompt);
-    let approvedCoding = false;
-    const isCodingRequest = !isExplicitImageHeader && /(کد|برنامه|سایت|وبسایت|وب‌سایت|اپلیکیشن|پلتفرم|کامپوننت|اسکریپت|فرانت|بک‌اند|الگوریتم|تابع|پروژه|\b(html|css|javascript|typescript|react|vue|angular|python|script|code|coding|website|webpage|component|function|api|endpoint|backend|frontend|dashboard|calculator)\b)/i.test(prompt);
-    const isImageRequest = isExplicitImageHeader || (!isCodingRequest && (
-      /(image|photo|picture|drawing|illustration|wallpaper|poster|portrait|landscape|render|cinematic|photorealistic|عکس|تصویر|نقاشی|پوستر|طرح|پرتره)/i.test(prompt) ||
-      /(create|draw|paint|sketch|generate|make|render|بساز|بکش|طراحی|تولید)/i.test(prompt)
-    ));
-    if (isImageRequest) {
+  let approvedCoding = false;
+  const isCodingRequest = !isExplicitImageHeader && /(کد|استارتاپ|کسب‌وکار|برنامه|سایت|وبسایت|وب‌سایت|اپلیکیشن|پلتفرم|کامپوننت|اسکریپت|فرانت|بک‌اند|الگوریتم|تابع|پروژه|\b(business|startup|saas|agency|ecommerce|html|css|javascript|typescript|react|vue|angular|python|script|code|coding|website|webpage|component|function|api|endpoint|backend|frontend|dashboard|calculator)\b)/i.test(prompt);
+  const isImageRequest = isExplicitImageHeader || (!isCodingRequest && (
+    /(image|photo|picture|drawing|illustration|wallpaper|poster|portrait|landscape|cinematic|photorealistic|عکس|تصویر|نقاشی|پوستر|طرح|پرتره)/i.test(prompt) &&
+    /(create|draw|paint|sketch|generate|make|render|بساز|بکش|طراحی|تولید)/i.test(prompt)
+  ));
+  if (isImageRequest) {
       const cleanDesc = prompt.replace(/\[[^\]]*\]/g, "").replace(/(Prompt Description|Art Style|Aspect Ratio):/gi, "").replace(/\s+/g, " ").trim() || "modern contemporary music studio";
       const expandedPrompt = neutralizeAndExpandPrompt(cleanDesc);
       const safeSeed = generateCryptographicSeed();

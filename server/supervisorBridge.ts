@@ -430,3 +430,56 @@ export async function executeMcpStatus(): Promise<{ success: boolean; data?: any
   }
   return { success: false, error: res.error || 'Failed to execute petros_status tool' };
 }
+
+
+/**
+ * Dispatches an approved task to the Petros Windows Worker via Router /run or MCP Bridge.
+ * Strictly requires confirm === 'RUN'.
+ */
+export async function executeWorkerTask(task: string, confirm: string): Promise<{ success: boolean; data?: any; error?: string }> {
+  if (confirm !== 'RUN') {
+    return { success: false, error: 'Confirmation required: confirm must equal "RUN"' };
+  }
+  const token = getWorkerToken();
+  if (!token) {
+    return { success: false, error: 'Worker authentication token missing' };
+  }
+
+  return new Promise((resolve) => {
+    const postData = JSON.stringify({ task, confirm });
+    const req = http.request(
+      {
+        hostname: '127.0.0.1',
+        port: 19847,
+        path: '/run',
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(postData),
+        },
+      },
+      (res) => {
+        let body = '';
+        res.on('data', (chunk) => { body += chunk; });
+        res.on('end', () => {
+          try {
+            const data = JSON.parse(body);
+            resolve({ success: res.statusCode === 200 && data.ok !== false, data });
+          } catch {
+            resolve({ success: res.statusCode === 200, data: { raw: body } });
+          }
+        });
+      }
+    );
+    req.on('error', (err) => {
+      resolve({ success: false, error: `Router connection failed: ${err.message}` });
+    });
+    req.setTimeout(60000, () => {
+      req.destroy();
+      resolve({ success: false, error: 'Task execution timed out after 60s' });
+    });
+    req.write(postData);
+    req.end();
+  });
+}

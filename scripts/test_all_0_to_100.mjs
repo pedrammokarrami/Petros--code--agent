@@ -92,7 +92,12 @@ async function runAllTests() {
   record(15, 'Verify ControlCenterRoom component exists', fs.existsSync(path.join(PETROS_ROOT, 'src/components/petros-city/ControlCenterRoom.tsx')));
   record(16, 'Verify EngineeringRoom component exists', fs.existsSync(path.join(PETROS_ROOT, 'src/components/petros-city/EngineeringRoom.tsx')));
   record(17, 'Verify LaboratoryRoom component exists', fs.existsSync(path.join(PETROS_ROOT, 'src/components/petros-city/LaboratoryRoom.tsx')));
-  record(18, 'Verify ContentStudioRoom component exists', fs.existsSync(path.join(PETROS_ROOT, 'src/components/petros-city/ContentStudioRoom.tsx')));
+  record(18, 'Verify all 7 spatial rooms exist (Laya, Eng, Ctrl, Lab, Agency, Commerce, Studio)', 
+    fs.existsSync(path.join(PETROS_ROOT, 'src/components/petros-city/LayaWelcomeRoom.tsx')) &&
+    fs.existsSync(path.join(PETROS_ROOT, 'src/components/petros-city/AgencyRoom.tsx')) &&
+    fs.existsSync(path.join(PETROS_ROOT, 'src/components/petros-city/CommerceRoom.tsx')) &&
+    fs.existsSync(path.join(PETROS_ROOT, 'src/components/petros-city/ContentStudioRoom.tsx'))
+  );
 
   const canvasCode = fs.readFileSync(path.join(PETROS_ROOT, 'src/components/petros-city/LuminousPointCloudCanvas.tsx'), 'utf8');
   record(19, 'Verify canvas adheres to #02040A void and #06101F radial lift', canvasCode.includes('#02040A') && canvasCode.includes('#06101F'));

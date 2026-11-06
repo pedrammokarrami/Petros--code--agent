@@ -1,0 +1,17 @@
+PRODUCT: Petros Autonomous Engineering & Operations AI
+VERSION: 4.0.0
+BUILD_DATE: 2026-11-07
+RELEASE_TIER: Production Release Candidate (RC-1)
+COMMIT: 3e41c79
+GIT_TAG: v4.0.0-windows
+REPOSITORY: https://github.com/pedrammokarrami/Petros--code--agent
+DISTRIBUTION_ROOT: PETROS-PLATFORM
+
+SUPPORTED & VERIFIED PLATFORMS:
+- Windows 10 (64-bit, x86_64) - FULLY SUPPORTED & VERIFIED
+- Windows 11 (64-bit, x86_64) - FULLY SUPPORTED & VERIFIED
+
+PENDING NATIVE BUILD HOSTS:
+- macOS (arm64, Apple Silicon) - SOURCE READY (Pending macOS runner)
+- macOS (x86_64, Intel) - SOURCE READY (Pending macOS runner)
+- Linux (x86_64 AppImage, Debian, Fedora) - SOURCE READY (Pending Linux runner)

@@ -35,3 +35,7 @@ Codgar-Ultimate-Core/release/
 
 windows/staging/
 windows/launcher/*.exe
+
+PETROS-PLATFORM/Windows/x64/*.exe
+PETROS-PLATFORM/Windows/x64/*.zip
+!PETROS-PLATFORM/RELEASE/

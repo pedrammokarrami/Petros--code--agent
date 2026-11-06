@@ -1,0 +1,42 @@
+PETROS THIRD-PARTY SOFTWARE NOTICES & LICENSES
+========================================================================
+
+Petros bundles and incorporates binary runtimes and libraries subject to
+the following open-source licenses:
+
+1. Node.js Runtime (v24.22.1)
+   License: Node.js License (MIT-style)
+   Copyright Node.js contributors. All rights reserved.
+   https://nodejs.org
+
+2. Inno Setup (6.7.3)
+   License: Inno Setup License (Modified BSD)
+   Copyright (C) 1997-2026 Jordan Russell. All rights reserved.
+   https://jrsoftware.org/isinfo.php
+
+3. Express.js
+   License: MIT License
+   Copyright (c) strongloop, expressjs, and other contributors
+   https://expressjs.com
+
+4. React 19 & React DOM
+   License: MIT License
+   Copyright (c) Meta Platforms, Inc. and affiliates.
+   https://react.dev
+
+5. ethers.js
+   License: MIT License
+   Copyright (c) 2019 Richard Moore
+   https://ethers.org
+
+6. Tailwind CSS
+   License: MIT License
+   Copyright (c) Tailwind Labs, Inc.
+   https://tailwindcss.com
+
+7. Lucide Icons
+   License: ISC License
+   Copyright (c) Lucide Contributors
+   https://lucide.dev
+
+========================================================================

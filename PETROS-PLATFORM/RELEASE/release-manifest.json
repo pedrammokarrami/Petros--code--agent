@@ -1,0 +1,79 @@
+{
+  "product": "Petros Autonomous Engineering & Operations AI",
+  "version": "4.0.0",
+  "buildDate": "2026-11-07T02:53:00Z",
+  "commit": "3e41c79",
+  "gitTag": "v4.0.0-windows",
+  "repository": "https://github.com/pedrammokarrami/Petros--code--agent",
+  "distributionRoot": "PETROS-PLATFORM",
+  "verification": {
+    "testSuite": "scripts/verify_windows_installer_e2e.py",
+    "totalTests": 15,
+    "testsPassed": 15,
+    "testsFailed": 0,
+    "successRate": "100%",
+    "zeroRegressionGate": "Passed"
+  },
+  "platforms": {
+    "windows_x64": {
+      "status": "Production Ready",
+      "os": ["Windows 10 (64-bit)", "Windows 11 (64-bit)"],
+      "architecture": "x86_64",
+      "runtime": "Node.js v24.22.1 (Bundled)",
+      "launcher": "Petros.exe (C# 64-bit GUI, WindowStyle=Hidden)",
+      "artifacts": [
+        {
+          "name": "Petros-Setup.exe",
+          "path": "Windows/x64/Petros-Setup.exe",
+          "sizeBytes": 25740288,
+          "sizeFormatted": "25.74 MB",
+          "format": "Inno Setup 6 Installer",
+          "sha256": "E0B75EEE2113B208F8D0413429EED162E4EF98EE6BEA49A5CBF8DA11979250E3"
+        },
+        {
+          "name": "Petros-Portable.zip",
+          "path": "Windows/x64/Petros-Portable.zip",
+          "sizeBytes": 36563746,
+          "sizeFormatted": "36.56 MB",
+          "format": "Portable Zip Archive",
+          "sha256": "AE52A91DB5F6A425C5250A263AAA7EED6BE30689FEA68211D22453F3F516E9FA"
+        }
+      ]
+    },
+    "macos_arm64": {
+      "status": "Pending Native Build Host",
+      "architecture": "arm64",
+      "minOS": "macOS 13.0 (Ventura)",
+      "sourceReadiness": "Verified (mac-app/)",
+      "recipe": "macOS/Apple-Silicon/README.txt"
+    },
+    "macos_x86_64": {
+      "status": "Pending Native Build Host",
+      "architecture": "x86_64",
+      "minOS": "macOS 12.0 (Monterey)",
+      "sourceReadiness": "Verified (mac-app/)",
+      "recipe": "macOS/Intel/README.txt"
+    },
+    "linux_x86_64": {
+      "status": "Pending Native Build Host",
+      "architecture": "x86_64",
+      "targetFormats": ["AppImage", "Debian (.deb)", "Fedora (.rpm)"],
+      "sourceReadiness": "Verified (scripts/run-petros-linux.sh)",
+      "recipe": "Linux/README.txt"
+    }
+  },
+  "documentation": [
+    {
+      "name": "Installation-Guide.pdf",
+      "path": "Documentation/Installation-Guide.pdf",
+      "sizeBytes": 131258,
+      "sha256": "33A49678112404AEDF41356A44D3DADBD06A0667B285A666BDCD340C0164BC96"
+    },
+    {
+      "name": "User-Guide.pdf",
+      "path": "Documentation/User-Guide.pdf",
+      "sizeBytes": 104759,
+      "sha256": "2A5AD0EF3B4D2CE91C7CCC2B0780451E3E856DD355B4FD55517361F23DE4B296"
+    }
+  ]
+}

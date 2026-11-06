@@ -1,4 +1,4 @@
-import esbuild from 'esbuild';
+// esbuild imported dynamically on demand
 import fs from 'fs';
 import path from 'path';
 
@@ -78,7 +78,7 @@ export class AppFactoryService {
     const autoFixedCode = this.attemptAutoRepair(currentCode, errors);
     if (autoFixedCode !== currentCode) {
       try {
-        const retryResult = await esbuild.transform(autoFixedCode, {
+        const retryResult = await esbuildMod.transform(autoFixedCode, {
           loader: 'tsx',
           target: 'es2022',
           jsx: 'transform',

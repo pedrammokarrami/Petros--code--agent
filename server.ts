@@ -23,7 +23,7 @@ import { secretManager } from './server/services/secretManagerService';
 
 
 
-import { transform } from 'esbuild';
+// esbuild dynamically loaded on demand in compile endpoints
 // [Architecture Fix] Safe global fallback for reqLang in ESBuild strict mode
 declare global {
   var reqLang: string;
@@ -202,7 +202,7 @@ import path from 'path';
 import fs from 'fs';
 import * as child_process from 'child_process';
 import { spawn, exec } from 'child_process';
-import { createServer as createViteServer } from 'vite';
+// vite dynamically loaded in dev mode only
 import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
 

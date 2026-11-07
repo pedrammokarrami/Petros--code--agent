@@ -1,0 +1,65 @@
+{
+  "public\\models\\agency": [
+    {
+      "file": "sheen-chair.glb",
+      "size": 4125648,
+      "license": "Khronos Group CC-BY 4.0 / PBR sample"
+    },
+    {
+      "file": "executive-chair.glb",
+      "size": 2028924,
+      "license": "Khronos Group CC0 / PBR sample"
+    },
+    {
+      "file": "glass-vase-flowers.glb",
+      "size": 1819824,
+      "license": "Khronos Group CC0 sample"
+    }
+  ],
+  "public\\models\\commerce": [
+    {
+      "file": "shipping-box-animated.glb",
+      "size": 11944,
+      "license": "Khronos Group CC0 sample"
+    },
+    {
+      "file": "retail-water-bottle.glb",
+      "size": 8966700,
+      "license": "Khronos Group CC0 sample"
+    },
+    {
+      "file": "delivery-logistics-truck.glb",
+      "size": 369980,
+      "license": "Cesium CC-BY 4.0 sample"
+    },
+    {
+      "file": "shipping-crate.glb",
+      "size": 5956,
+      "license": "Khronos Group CC0 sample"
+    }
+  ],
+  "public\\models\\content": [
+    {
+      "file": "studio-camera.glb",
+      "size": 17540348,
+      "license": "Khronos Group CC0 sample"
+    },
+    {
+      "file": "broadcast-audio-boombox.glb",
+      "size": 10614184,
+      "license": "Khronos Group CC0 sample"
+    }
+  ],
+  "public\\models\\research": [
+    {
+      "file": "neural-brain-stem.glb",
+      "size": 3194848,
+      "license": "Khronos Group CC0 sample"
+    },
+    {
+      "file": "iridescence-optic-sensor.glb",
+      "size": 4083912,
+      "license": "Khronos Group CC0 sample"
+    }
+  ]
+}

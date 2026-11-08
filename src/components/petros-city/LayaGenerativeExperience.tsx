@@ -45,6 +45,8 @@ interface Props {
   onToggleLegacy?: () => void;
 }
 
+type WorldEnvironment = 'void' | 'commerce' | 'engineering' | 'agency' | 'research';
+
 export function LayaGenerativeExperience({
   language = 'fa',
   onLanguageChange,
@@ -68,7 +70,7 @@ export function LayaGenerativeExperience({
     setVisualMode(mode);
     try {
       localStorage.setItem('petros_visual_mode', mode);
-      useBusinessWorldStore.getState().setVisualMode(mode);
+      useBusinessWorldStore.getState().setVisualMode(mode === 'holographic' ? 'immersive' : 'stage');
     } catch {}
   };
 

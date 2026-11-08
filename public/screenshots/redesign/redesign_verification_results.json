@@ -1,0 +1,30 @@
+{
+  "timestamp": "2026-11-07 17:14:43",
+  "metrics": {
+    "holographic_mode_fps": {
+      "avgFps": 0.6,
+      "frameCount": 2,
+      "durationSeconds": 3.5,
+      "minDeltaMs": -6.9,
+      "maxDeltaMs": 3549.8
+    },
+    "normal_mode_fps": {
+      "avgFps": 50.4,
+      "frameCount": 101,
+      "durationSeconds": 2,
+      "minDeltaMs": 5.1,
+      "maxDeltaMs": 50.1
+    }
+  },
+  "verifications": {
+    "canvas_mounted": true,
+    "no_text_in_3d_canvas": true,
+    "commerce_room_switch": true,
+    "factory_room_switch": true,
+    "normal_mode_active": true,
+    "thinking_indicator_present": true,
+    "clean_turn_focus": true,
+    "history_drawer_opened": true,
+    "holographic_with_response": true
+  }
+}

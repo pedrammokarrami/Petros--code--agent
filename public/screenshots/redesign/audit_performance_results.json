@@ -1,0 +1,47 @@
+{
+  "normal_mode": {
+    "avgFps": 47.1,
+    "frameCount": 142,
+    "durationSeconds": 3,
+    "minDeltaMs": 16.6,
+    "maxDeltaMs": 50,
+    "memory": {
+      "usedJSHeapMB": 11.2,
+      "totalJSHeapMB": 18.3
+    }
+  },
+  "holographic_static": {
+    "avgFps": 0.5,
+    "frameCount": 2,
+    "durationSeconds": 3.8,
+    "minDeltaMs": 13.8,
+    "maxDeltaMs": 3816.5,
+    "memory": {
+      "usedJSHeapMB": 9.4,
+      "totalJSHeapMB": 11.5
+    }
+  },
+  "holographic_transition": {
+    "avgFps": 0.6,
+    "frameCount": 2,
+    "durationSeconds": 3.5,
+    "minDeltaMs": -11.6,
+    "maxDeltaMs": 3499.8,
+    "memory": {
+      "usedJSHeapMB": 9.6,
+      "totalJSHeapMB": 11
+    }
+  },
+  "visibility_api_present": true,
+  "prolonged_session": {
+    "avgFps": 0.6,
+    "frameCount": 2,
+    "durationSeconds": 3.4,
+    "minDeltaMs": 7.3,
+    "maxDeltaMs": 3416.5,
+    "memory": {
+      "usedJSHeapMB": 9.7,
+      "totalJSHeapMB": 10.8
+    }
+  }
+}

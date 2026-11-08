@@ -39,24 +39,66 @@ export class AppFactoryService {
     let currentCode = sourceCode;
     let repaired = false;
 
-    // Step 1: Initial validation with esbuild transform
+    // Step 1: Initial validation with esbuild transform or structural fallback
     let buildError: any = null;
+    let esbuildMod: any = null;
     try {
-      const result = await esbuild.transform(currentCode, {
-        loader: 'tsx',
-        target: 'es2022',
-        jsx: 'transform',
-      });
-      const previewHtml = this.generatePreviewHtml(currentCode, appName);
-      return {
-        valid: true,
-        code: currentCode,
-        compiledJs: result.code,
-        previewHtml,
-        errors: [],
-        repaired: false,
-        buildTimeMs: Date.now() - startTime,
-      };
+      esbuildMod = require('esbuild');
+    } catch {
+      esbuildMod = null;
+    }
+
+    try {
+      if (esbuildMod && typeof esbuildMod.transform === 'function') {
+        const result = await esbuildMod.transform(currentCode, {
+          loader: 'tsx',
+          target: 'es2022',
+          jsx: 'transform',
+        });
+        const previewHtml = this.generatePreviewHtml(currentCode, appName);
+        return {
+          valid: true,
+          code: currentCode,
+          compiledJs: result.code,
+          previewHtml,
+          errors: [],
+          repaired: false,
+          buildTimeMs: Date.now() - startTime,
+        };
+      } else {
+        // Built-in syntax & tag balance validator
+        const openBraces = (currentCode.match(/{/g) || []).length;
+        const closeBraces = (currentCode.match(/}/g) || []).length;
+
+        // Strip self-closing tags and strings before checking open/close tags
+        const codeStripped = currentCode
+          .replace(/`[\s\S]*?`/g, '""')
+          .replace(/"[\s\S]*?"/g, '""')
+          .replace(/'[\s\S]*?'/g, "''")
+          .replace(/<[a-zA-Z][^>]*\/>/g, '');
+
+        // Match only paired opening and closing tags (ignoring standard void elements)
+        const openDivs = (codeStripped.match(/<([a-zA-Z][a-zA-Z0-9._-]*)(?:\s+[^>]*)?>/g) || [])
+          .filter(t => !/<\s*(?:img|input|br|hr|meta|link)\b/i.test(t)).length;
+        const closeDivs = (codeStripped.match(/<\/[a-zA-Z][a-zA-Z0-9._-]*>/g) || []).length;
+
+        if (openBraces !== closeBraces) {
+          throw new Error(`SyntaxError: Unmatched braces: ${openBraces} open, ${closeBraces} close`);
+        }
+        if (openDivs !== closeDivs) {
+          throw new Error(`SyntaxError: Unclosed JSX tag: ${openDivs} open tags vs ${closeDivs} closing tags`);
+        }
+        const previewHtml = this.generatePreviewHtml(currentCode, appName);
+        return {
+          valid: true,
+          code: currentCode,
+          compiledJs: currentCode,
+          previewHtml,
+          errors: [],
+          repaired: false,
+          buildTimeMs: Date.now() - startTime,
+        };
+      }
     } catch (err: any) {
       buildError = err;
     }

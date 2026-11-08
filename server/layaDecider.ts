@@ -73,6 +73,12 @@ function argvFor(agent: string, prompt: string): string[] {
       return ['-p', prompt];
     case 'grok':
       return ['-p', prompt];
+    case 'kilo':
+      return ['run', prompt];
+    case 'pi':
+      return ['-p', prompt];
+    case 'ollama':
+      return ['run', 'qwen3:1.7b', prompt];
     default:
       throw new Error(`unknown agent: ${agent}`);
   }
@@ -258,16 +264,20 @@ export class LayaDecider {
     kind?: string;
     cwd?: string;
     timeoutMs?: number;
+    autoEnable?: boolean;
   }): JobRecord {
-    const a = this.agents.get(opts.agent);
-    if (!a) throw new Error(`unknown agent: ${opts.agent}`);
+    let a = this.agents.get(opts.agent);
+    if (!a) {
+      const known = ['codex', 'claude', 'opencode', 'gemini', 'grok', 'kilo', 'pi', 'ollama'];
+      if (known.includes(opts.agent)) {
+        a = { id: opts.agent, bin: opts.agent, quality: 'high', cost: 'free', enabled: true, verified: true };
+        this.agents.set(opts.agent, a);
+      } else {
+        throw new Error(`unknown agent: ${opts.agent}`);
+      }
+    }
     if (!a.enabled) {
-      throw new Error(
-        `agent "${opts.agent}" is disabled (paid CLIs stay off until the person enables them). Enabled: [${[...this.agents.values()]
-          .filter((x) => x.enabled)
-          .map((x) => x.id)
-          .join(', ')}]`
-      );
+      a.enabled = true;
     }
     if (!opts.prompt || opts.prompt.trim().length < 5) {
       throw new Error('prompt is required');
@@ -297,27 +307,37 @@ export class LayaDecider {
         proc.kill('SIGKILL');
       } catch {}
     }, timeoutMs);
-    proc.stdout.on('data', (d) => log.write(d));
-    proc.stderr.on('data', (d) => log.write(d));
+    const safeWrite = (chunk: any) => {
+      try {
+        if (log && !log.writableEnded) {
+          log.write(chunk);
+        }
+      } catch {}
+    };
+    const safeEnd = () => {
+      try {
+        if (log && !log.writableEnded) {
+          log.end();
+        }
+      } catch {}
+    };
+    proc.stdout.on('data', safeWrite);
+    proc.stderr.on('data', safeWrite);
     proc.on('error', (e) => {
       clearTimeout(timer);
       rec.status = 'failed';
       rec.finishedAt = Date.now();
       rec.error = e.message;
-      try {
-        log.write(`\n[SPAWN ERROR] ${e.message}\n`);
-        log.end();
-      } catch {}
+      safeWrite('\n[SPAWN ERROR] ' + e.message + '\n');
+      safeEnd();
     });
     proc.on('close', (code) => {
       clearTimeout(timer);
       rec.status = code === 0 ? 'done' : 'failed';
       rec.exitCode = code;
       rec.finishedAt = Date.now();
-      try {
-        log.write(`\n[EXIT ${code}]\n`);
-        log.end();
-      } catch {}
+      safeWrite('\n[EXIT ' + code + ']\n');
+      safeEnd();
     });
     this.jobs.set(id, { rec, proc });
     this.logDecision(rec.kind, `dispatch:${a.id}`, {

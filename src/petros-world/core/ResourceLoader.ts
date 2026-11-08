@@ -103,7 +103,7 @@ export class ResourceLoader {
         }
         if (child.material) {
           if (Array.isArray(child.material)) {
-            child.material.forEach((mat) => ResourceLoader.disposeMaterial(mat));
+            child.material.forEach((mat: THREE.Material) => ResourceLoader.disposeMaterial(mat));
           } else {
             ResourceLoader.disposeMaterial(child.material);
           }

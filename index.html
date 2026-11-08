@@ -148,7 +148,7 @@
       document.addEventListener("click", function(e) {
         const btn = e.target.closest("button");
         if (!btn) return;
-        if (btn.querySelector("svg") && (btn.classList.contains("mic-button") || btn.getAttribute("aria-label")?.includes("mic") || btn.closest(".border-white\\/10"))) {
+        if (btn.classList.contains("mic-button") || btn.getAttribute("aria-label")?.includes("mic") || btn.getAttribute("data-action") === "mic") {
           e.preventDefault();
           e.stopPropagation();
           window.open("/voice.html", "VoiceInput", "width=380,height=280");
@@ -248,7 +248,7 @@
         if (!btn) return;
 
         // اگر روی دکمه میکروفون کلیک شد
-        if (btn.querySelector("svg") && (btn.classList.contains("mic-button") || btn.closest(".border-white\\/10") || btn.getAttribute("aria-label")?.includes("mic"))) {
+        if (btn.classList.contains("mic-button") || btn.getAttribute("aria-label")?.includes("mic") || btn.getAttribute("data-action") === "mic") {
           startRecording();
         }
 
@@ -621,7 +621,24 @@
           }
         }
       }
-      setInterval(renderAIImages, 500);
+      if (window.MutationObserver) {
+        let scheduled = false;
+        const obs = new MutationObserver(() => {
+          if (!scheduled) {
+            scheduled = true;
+            requestAnimationFrame(() => {
+              renderAIImages();
+              scheduled = false;
+            });
+          }
+        });
+        document.addEventListener("DOMContentLoaded", () => {
+          renderAIImages();
+          obs.observe(document.body, { childList: true, subtree: true });
+        });
+      } else {
+        document.addEventListener("DOMContentLoaded", renderAIImages);
+      }
       document.addEventListener("DOMContentLoaded", renderAIImages);
     })();
     </script>

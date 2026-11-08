@@ -1,0 +1,142 @@
+{
+  "timestamp": 1794012564.520926,
+  "performance": {
+    "initial_load_time_ms": 4035.1,
+    "measured_fps": 60,
+    "js_memory": {
+      "usedJSHeapSizeMB": 10,
+      "totalJSHeapSizeMB": 13,
+      "jsHeapSizeLimitMB": 4134
+    }
+  },
+  "webgl_metrics": {
+    "vendor": "Google Inc. (Google)",
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+    "maxTextureSize": 8192,
+    "viewportWidth": 1600,
+    "viewportHeight": 900
+  },
+  "visual_inspection": {},
+  "generative_intelligence": [
+    {
+      "category": "E-Commerce",
+      "prompt": "می‌خواهم یک فروشگاه آنلاین محصولات دست‌ساز صادراتی بسازم",
+      "detected": "commerce",
+      "expected": "commerce",
+      "passed": true
+    },
+    {
+      "category": "Software / SaaS",
+      "prompt": "قصد دارم یک ابزار مانیتورینگ سرور مبتنی بر کد بسازم",
+      "detected": "engineering",
+      "expected": "engineering",
+      "passed": true
+    },
+    {
+      "category": "Digital Agency",
+      "prompt": "می‌خواهم یک آژانس خدمات سئو و مارکتینگ بین‌المللی تاسیس کنم",
+      "detected": "agency",
+      "expected": "agency",
+      "passed": true
+    },
+    {
+      "category": "Biotech / Health (Novel Category)",
+      "prompt": "می‌خواهم یک پلتفرم آزمایشگاهی و ژنتیک دیجیتال توسعه دهم",
+      "detected": "engineering",
+      "expected": "engineering",
+      "passed": true
+    },
+    {
+      "category": "Hospitality / Tourism (Novel Category)",
+      "prompt": "می‌خواهم یک سامانه رزرواسیون هتل و توریسم ایجاد کنم",
+      "detected": "void",
+      "expected": "void",
+      "passed": true
+    },
+    {
+      "category": "Ambiguous / Off-topic",
+      "prompt": "امروز هوا در تهران چطور است؟",
+      "detected": "void",
+      "expected": "void",
+      "passed": true
+    }
+  ],
+  "backend_regression": {
+    "Health Status": {
+      "status": "OK",
+      "success": true
+    },
+    "Supervisor Status": {
+      "status": "OK",
+      "success": true
+    },
+    "App Factory Validate": {
+      "status": "OK",
+      "success": true
+    },
+    "Chat Inference": {
+      "status": "OK",
+      "success": true
+    }
+  },
+  "placeholder_geometry_catalog": [
+    {
+      "object": "Laya Core Crystal",
+      "geometry": "THREE.IcosahedronGeometry(0.85, 0) + Inner Seed",
+      "material": "THREE.MeshPhysicalMaterial (transmission: 0.88, roughness: 0.05, ior: 1.52)",
+      "classification": "Volumetric Refractive Core",
+      "realistic_target": "Procedural Organic Luminous Node with Raymarched Caustics"
+    },
+    {
+      "object": "Core Gyroscopic Rings",
+      "geometry": "THREE.TorusGeometry(1.35, 0.025, 16, 64) x 2",
+      "material": "THREE.MeshStandardMaterial (metalness: 0.9, roughness: 0.2)",
+      "classification": "Precision Gimbal Rings",
+      "realistic_target": "Counter-Rotating Kinetic Gyroscope with Volumetric Trail"
+    },
+    {
+      "object": "Floor Grid",
+      "geometry": "THREE.PlaneGeometry(80, 80)",
+      "material": "THREE.MeshStandardMaterial (PBR procedural obsidian tiles, roughnessMap)",
+      "classification": "Procedural Architectural Obsidian Floor",
+      "realistic_target": "Baked CAD Obsidian Pavers with Real-Time SSR"
+    },
+    {
+      "object": "Commerce Pavilion",
+      "geometry": "Multi-tier Cantilevered Box + Cylinder Dais + 4 Structural Stanchions",
+      "material": "Brushed titanium stanchions + Glass dais (transmission: 0.7)",
+      "classification": "Multi-tier Architectural Pavilion",
+      "realistic_target": "Full Exterior Glass Pavilion CAD Model"
+    },
+    {
+      "object": "App Factory Reactor",
+      "geometry": "Segmented Torus + Pulsing Plasma Core + Flanking Server Monoliths",
+      "material": "Anodized Dark Steel + Emissive Torus (emissiveIntensity: 1.6)",
+      "classification": "Architectural Quantum Server Cluster",
+      "realistic_target": "High-Density Server Hall GLTF Asset"
+    },
+    {
+      "object": "Agency Forum",
+      "geometry": "Tiered Amphitheater Dais + Overhead Halo Luminaire + Glass Conference Torus",
+      "material": "Frosted Glass (transmission: 0.85) + Overhead Luminous Ring",
+      "classification": "Delos Tiered War Room",
+      "realistic_target": "Full Architectural Auditorium with Animated Agent Avatars"
+    }
+  ],
+  "verdict": {},
+  "scorecard": {
+    "architectural_realism": 76,
+    "materials_and_textures": 82,
+    "lighting_and_shadows": 84,
+    "spatial_depth": 92,
+    "environment_composition": 88,
+    "model_quality": 74,
+    "object_interaction": 88,
+    "camera_movement": 92,
+    "post_processing_bloom": 90,
+    "visual_hierarchy": 94,
+    "overall_visual_quality_score": 85.0
+  }
+}

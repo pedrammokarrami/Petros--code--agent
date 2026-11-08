@@ -38,6 +38,7 @@ export class SceneEngine {
 
   private isRunning: boolean = true;
   private animationFrameId: number | null = null;
+  private lastFrameTime: number = performance.now();
 
   constructor(container: HTMLElement, initialQuality: QualityTier = 'balanced') {
     this.container = container;
@@ -213,9 +214,13 @@ export class SceneEngine {
     };
   }
 
-  private animate(): void {
+  private animate(time?: number): void {
     if (!this.isRunning) return;
-    this.cameraController.update();
+    const now = typeof time === 'number' ? time : performance.now();
+    const delta = Math.min(Math.max((now - this.lastFrameTime) / 1000, 0.001), 0.1);
+    this.lastFrameTime = now;
+
+    this.cameraController.update(delta);
     this.renderer.render(this.scene, this.camera);
     this.animationFrameId = requestAnimationFrame(this.animate);
   }

@@ -1,0 +1,35 @@
+{
+  "timestamp": 1794010705.14255,
+  "stages": {
+    "01_initial_minimal": {
+      "has_canvas": true,
+      "has_brand": true,
+      "has_input": true,
+      "has_voice": true,
+      "dashboard_cards_count": 0,
+      "passed": true
+    },
+    "02_persian_conversation": {
+      "prompt": "من می‌خواهم یک استارتاپ تجارت الکترونیک بین‌المللی بسازم",
+      "passed": true
+    },
+    "03_world_generated_commerce": {
+      "hud_commerce_active": true,
+      "node_count": 2,
+      "passed": true
+    },
+    "04_node_drawer": {
+      "drawer_opened": true,
+      "passed": true
+    },
+    "05_app_factory": {
+      "hud_eng_active": true,
+      "node_count": 2,
+      "passed": true
+    },
+    "06_reset_void": {
+      "passed": true
+    }
+  },
+  "overall": "PASSED"
+}

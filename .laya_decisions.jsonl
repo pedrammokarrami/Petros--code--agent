@@ -1,1 +1,7 @@
 {"kind":"frontend","note":"react","lane":"free-pool","agent":null,"skill":"vercel-labs/agent-skills","reason":"no CLI agent enabled (paid CLIs stay off until the person enables them) → free-pool draft lane","at":1791984072522}
+{"kind":"frontend","note":"dispatch:codex","lane":"cli-agent","agent":"codex","skill":null,"reason":"background dispatch to codex (cwd inside workspace)","at":1794048490585}
+{"kind":"code-small","note":"dispatch:claude","lane":"cli-agent","agent":"claude","skill":null,"reason":"background dispatch to claude (cwd inside workspace)","at":1794050727296}
+{"kind":"code-small","note":"dispatch:opencode","lane":"cli-agent","agent":"opencode","skill":null,"reason":"background dispatch to opencode (cwd inside workspace)","at":1794050727320}
+{"kind":"code-small","note":"dispatch:kilo","lane":"cli-agent","agent":"kilo","skill":null,"reason":"background dispatch to kilo (cwd inside workspace)","at":1794050727334}
+{"kind":"code-small","note":"dispatch:pi","lane":"cli-agent","agent":"pi","skill":null,"reason":"background dispatch to pi (cwd inside workspace)","at":1794050727343}
+{"kind":"code-small","note":"dispatch:ollama","lane":"cli-agent","agent":"ollama","skill":null,"reason":"background dispatch to ollama (cwd inside workspace)","at":1794050727366}

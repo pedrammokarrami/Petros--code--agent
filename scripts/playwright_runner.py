@@ -4,6 +4,11 @@ import json
 import argparse
 from playwright.sync_api import sync_playwright
 
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if hasattr(sys.stderr, 'reconfigure'):
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+
 CHROME_PATHS = [
     r"C:\Program Files\Google\Chrome\Application\chrome.exe",
     r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
@@ -115,12 +120,72 @@ def run_screenshot(url, output_path):
         finally:
             browser.close()
 
+def run_interact(url, selector, action_type="click", text=""):
+    exe = get_executable_path()
+    if not exe:
+        return {"success": False, "error": "No browser executable found."}
+    
+    with sync_playwright() as p:
+        browser = p.chromium.launch(executable_path=exe, headless=True)
+        context = browser.new_context()
+        page = context.new_page()
+        try:
+            page.goto(url, timeout=20000, wait_until="domcontentloaded")
+            if action_type == "click":
+                page.click(selector, timeout=5000)
+            elif action_type == "fill":
+                page.fill(selector, text, timeout=5000)
+            elif action_type == "press":
+                page.press(selector, text or "Enter")
+            
+            return {
+                "success": True,
+                "action": action_type,
+                "selector": selector,
+                "currentUrl": page.url,
+                "title": page.title()
+            }
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+        finally:
+            browser.close()
+
+def run_extract(url):
+    exe = get_executable_path()
+    if not exe:
+        return {"success": False, "error": "No browser executable found."}
+    
+    with sync_playwright() as p:
+        browser = p.chromium.launch(executable_path=exe, headless=True)
+        context = browser.new_context()
+        page = context.new_page()
+        try:
+            page.goto(url, timeout=20000, wait_until="domcontentloaded")
+            title = page.title()
+            headings = [h.text_content().strip() for h in page.query_selector_all("h1, h2, h3")[:8]]
+            paragraphs = [p.text_content().strip() for p in page.query_selector_all("p")[:6] if len(p.text_content().strip()) > 30]
+            
+            return {
+                "success": True,
+                "url": url,
+                "title": title,
+                "headings": headings,
+                "summary": " ".join(paragraphs)[:1500]
+            }
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+        finally:
+            browser.close()
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--action", required=True, choices=["navigate", "search", "screenshot"])
+    parser.add_argument("--action", required=True, choices=["navigate", "search", "screenshot", "interact", "extract"])
     parser.add_argument("--url", default="")
     parser.add_argument("--query", default="")
     parser.add_argument("--output", default="screenshot.png")
+    parser.add_argument("--selector", default="")
+    parser.add_argument("--type", default="click")
+    parser.add_argument("--text", default="")
     args = parser.parse_args()
 
     if args.action == "navigate":
@@ -129,6 +194,10 @@ def main():
         res = run_search(args.query or "Petros autonomous startup AI")
     elif args.action == "screenshot":
         res = run_screenshot(args.url or "https://httpbin.org/get", args.output)
+    elif args.action == "interact":
+        res = run_interact(args.url, args.selector, args.type, args.text)
+    elif args.action == "extract":
+        res = run_extract(args.url or "https://httpbin.org/get")
     else:
         res = {"success": False, "error": "Unknown action"}
 

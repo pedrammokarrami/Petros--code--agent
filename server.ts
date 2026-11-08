@@ -310,7 +310,7 @@ app.use('/media', express.static(mediaDir));
 
 
 const PORT = Number(process.env.PORT) || 3000;
-const BIND_HOST = process.env.BIND_HOST || '127.0.0.1';
+const BIND_HOST = process.env.BIND_HOST || '0.0.0.0';
 const DEFAULT_PETROS_WORKSPACE = path.resolve(process.env.USERPROFILE || 'C:\\Users\\ELI', 'Desktop', 'petros');
 let WORKSPACE_ROOT = process.env.PETROS_WORKSPACE || (fs.existsSync(DEFAULT_PETROS_WORKSPACE) ? DEFAULT_PETROS_WORKSPACE : process.cwd());
 

@@ -260,6 +260,7 @@ app.post('/api/sandbox/compile', async (req: any, res: any) => {
       return res.status(200).json({ success: true, compiledCode: '', isEmpty: true });
     }
 
+    const { transform } = await import('esbuild');
     const result = await transform(src, {
       loader: 'tsx',
       format: 'iife',
@@ -4505,7 +4506,8 @@ async function startServer() {
   // SPA HTML fallback for GET requests.
   try { (app as any).use(createYadowRouter()); } catch(e) { console.error("Yadow mount error:", e); }
 
-  if (process.env.NODE_ENV !== 'production' && typeof createViteServer !== 'undefined') {
+  if (process.env.NODE_ENV !== 'production') {
+    const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',

@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+:root {
+  --petros-void: #02040a;
+  --petros-surface: rgba(12, 19, 31, 0.72);
+  --petros-surface-strong: rgba(17, 26, 42, 0.9);
+  --petros-border: rgba(148, 190, 255, 0.16);
+  --petros-border-strong: rgba(103, 183, 255, 0.42);
+  --petros-text: #f5f8ff;
+  --petros-muted: #8d9aaf;
+  --petros-blue: #4f8cff;
+  --petros-sky: #67b7ff;
+  --petros-success: #53d7b0;
+  --petros-warning: #ffbd72;
+  --petros-danger: #ff7187;
+  --petros-radius-sm: 10px;
+  --petros-radius-md: 16px;
+  --petros-radius-lg: 24px;
+  --petros-shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
+}
+
+.petros-glass {
+  background: var(--petros-surface);
+  border: 1px solid var(--petros-border);
+  box-shadow: var(--petros-shadow);
+  backdrop-filter: blur(22px) saturate(135%);
+  -webkit-backdrop-filter: blur(22px) saturate(135%);
+}
+
+.petros-glass:hover { border-color: var(--petros-border-strong); }
+.petros-display { font-family: 'Space Grotesk', system-ui, sans-serif; }
+.petros-body { font-family: 'DM Sans', system-ui, sans-serif; }
+
+@keyframes scan { from { transform: translateY(-20px); opacity: 0; } 20%, 80% { opacity: 0.9; } to { transform: translateY(230px); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }

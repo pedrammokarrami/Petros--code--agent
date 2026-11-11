@@ -4018,6 +4018,7 @@ async function startServer() {
   try { (app as any).use(createYadowRouter()); } catch(e) { console.error("Yadow mount error:", e); }
 
   if (process.env.NODE_ENV !== 'production') {
+    const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',

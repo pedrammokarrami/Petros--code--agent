@@ -41,3 +41,6 @@ PETROS-PLATFORM/Windows/x64/*.zip
 !PETROS-PLATFORM/RELEASE/
 
 .logs/
+
+# Local screenshots and generated review artifacts
+artifacts/

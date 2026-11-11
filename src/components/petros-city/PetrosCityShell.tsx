@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import {
   Compass,
   Cpu,
@@ -16,15 +16,33 @@ import {
   LogOut,
 } from 'lucide-react';
 import { LuminousPointCloudCanvas } from './LuminousPointCloudCanvas';
-import { LayaWelcomeRoom } from './LayaWelcomeRoom';
-import { AgencyRoom } from './AgencyRoom';
-import { CommerceRoom } from './CommerceRoom';
-import { ControlCenterRoom } from './ControlCenterRoom';
-import { LaboratoryRoom } from './LaboratoryRoom';
-import { EngineeringRoom } from './EngineeringRoom';
-import { ContentStudioRoom } from './ContentStudioRoom';
-import { PetrosFlowRoom } from './PetrosFlowRoom';
+import { HologramRezIn } from './HologramRezIn';
+import { PETROS_ROOMS, type RoomId } from '../../data/petrosBlueprint';
 import { Message } from '../../types';
+
+// Every room is its own chunk: the 5 MB first-load budget only holds if the shell
+// never statically imports a room. The holographic rez-in masks the fetch.
+const LayaWelcomeRoom = lazy(() =>
+  import('./LayaWelcomeRoom').then((mod) => ({ default: mod.LayaWelcomeRoom })),
+);
+const AgencyRoom = lazy(() => import('./AgencyRoom').then((mod) => ({ default: mod.AgencyRoom })));
+const CommerceRoom = lazy(() => import('./CommerceRoom').then((mod) => ({ default: mod.CommerceRoom })));
+const ControlCenterRoom = lazy(() =>
+  import('./ControlCenterRoom').then((mod) => ({ default: mod.ControlCenterRoom })),
+);
+const LaboratoryRoom = lazy(() =>
+  import('./LaboratoryRoom').then((mod) => ({ default: mod.LaboratoryRoom })),
+);
+const EngineeringRoom = lazy(() =>
+  import('./EngineeringRoom').then((mod) => ({ default: mod.EngineeringRoom })),
+);
+const ContentStudioRoom = lazy(() =>
+  import('./ContentStudioRoom').then((mod) => ({ default: mod.ContentStudioRoom })),
+);
+const PetrosFlowRoom = lazy(() =>
+  import('./PetrosFlowRoom').then((mod) => ({ default: mod.PetrosFlowRoom })),
+);
+const BlueprintRoom = lazy(() => import('./BlueprintRoom').then((mod) => ({ default: mod.BlueprintRoom })));
 
 interface Props {
   onToggleLegacy?: () => void;
@@ -42,7 +60,14 @@ export type CityRoom =
   | 'agency'
   | 'commerce'
   | 'studio'
-  | 'flow';
+  | 'flow'
+  | RoomId;
+
+const BLUEPRINT_ROOM_IDS = new Set<string>(PETROS_ROOMS.map((room) => room.id));
+
+function isBlueprintRoom(id: CityRoom): id is RoomId {
+  return BLUEPRINT_ROOM_IDS.has(id);
+}
 
 export function PetrosCityShell({
   onToggleLegacy,
@@ -160,6 +185,14 @@ export function PetrosCityShell({
     { id: 'flow', label: isFa ? 'جریان‌های خودکار' : 'Petros Flow', icon: Workflow },
     { id: 'control', label: isFa ? 'مرکز فرماندهی' : 'Control Center', icon: Server },
   ];
+
+  // The 13 blueprint bays: 12 industries plus Sohrab's shared treasury.
+  const industryRooms = PETROS_ROOMS.map((room) => ({
+    id: room.id as CityRoom,
+    label: isFa ? room.name.fa : room.name.en,
+    code: `R${String(room.index).padStart(2, '0')}`,
+    accent: room.accent,
+  }));
 
   return (
     <div className="relative min-h-screen w-full bg-[#02040A] text-slate-100 flex flex-col overflow-x-hidden select-none font-sans">
@@ -300,8 +333,33 @@ export function PetrosCityShell({
         })}
       </div>
 
-      {/* 3. Main Room Stage */}
+      {/* 3. Blueprint Industry Bays (13 rooms, lazily loaded) */}
+      <div className="lg:hidden flex overflow-x-auto gap-1.5 px-2 pb-2 bg-[#02040A]/70 border-b border-slate-800/70 z-10">
+        {industryRooms.map((room) => {
+          const isActive = activeRoom === room.id;
+          return (
+            <button
+              key={room.id}
+              onClick={() => setActiveRoom(room.id)}
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] whitespace-nowrap border transition ${
+                isActive
+                  ? 'text-white bg-slate-800/80'
+                  : 'text-slate-500 border-transparent hover:text-slate-300'
+              }`}
+              style={isActive ? { borderColor: `${room.accent}66` } : undefined}
+            >
+              <span className="font-mono text-[9px]" style={{ color: room.accent }}>
+                {room.code}
+              </span>
+              <span>{room.label}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* 4. Main Room Stage */}
       <main className="relative z-10 flex-1 flex flex-col py-4 px-2 sm:px-4 overflow-y-auto">
+        <Suspense fallback={<HologramRezIn isFa={isFa} />}>
         {activeRoom === 'welcome' && (
           <LayaWelcomeRoom
             isFa={isFa}
@@ -321,6 +379,8 @@ export function PetrosCityShell({
         {activeRoom === 'studio' && <ContentStudioRoom isFa={isFa} />}
         {activeRoom === 'flow' && <PetrosFlowRoom isFa={isFa} />}
         {activeRoom === 'control' && <ControlCenterRoom isFa={isFa} />}
+        {isBlueprintRoom(activeRoom) && <BlueprintRoom roomId={activeRoom} isFa={isFa} />}
+        </Suspense>
       </main>
     </div>
   );

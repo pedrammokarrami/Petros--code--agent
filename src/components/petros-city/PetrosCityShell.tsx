@@ -200,15 +200,15 @@ export function PetrosCityShell({
       <LuminousPointCloudCanvas isExecuting={isExecuting} activeRoom={activeRoom} />
 
       {/* 2. Top Navigation & Telemetry Header */}
-      <header className="relative z-10 w-full px-4 py-3 bg-[#02040A]/80 border-b border-[#4FB8FF]/15 backdrop-blur-md flex items-center justify-between gap-4">
+      <header className="relative z-10 w-full px-3 py-2.5 sm:px-4 sm:py-3 bg-[#02040A]/80 border-b border-[#4FB8FF]/15 backdrop-blur-md flex flex-wrap items-center justify-between gap-2 sm:gap-4">
         {/* Brand & City Title */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#0A2E66] via-[#1F6FEB] to-[#4FB8FF] flex items-center justify-center shadow-lg shadow-blue-500/25 border border-white/20">
             <span className="font-bold text-white text-sm">P</span>
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-bold tracking-tight text-white text-sm">PETROS CITY</span>
+              <span className="font-bold tracking-tight text-white text-sm whitespace-nowrap">PETROS CITY</span>
               <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-blue-950/60 border border-blue-500/30 text-[#4FB8FF]">
                 v4.0
               </span>
@@ -242,10 +242,10 @@ export function PetrosCityShell({
         </nav>
 
         {/* Status Telemetry & Controls */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex flex-wrap items-center justify-end gap-1.5 sm:gap-2.5 min-w-0">
           {/* Ecosystem State Pill */}
           <div
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono font-medium border ${
+            className={`flex shrink-0 items-center gap-1.5 px-2 py-1 sm:px-2.5 rounded-full text-[11px] sm:text-xs font-mono font-medium border whitespace-nowrap ${
               ecosystemState === 'ONLINE'
                 ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400'
                 : ecosystemState === 'DEGRADED'
@@ -269,12 +269,12 @@ export function PetrosCityShell({
 
           {/* Wallet Identity & Credit Allowance */}
           {walletSession && (
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-700/80 text-xs font-mono">
+            <div className="flex shrink-0 items-center gap-1.5 px-2 py-1 sm:px-2.5 rounded-xl bg-slate-900 border border-slate-700/80 text-xs font-mono whitespace-nowrap">
               <div className="w-2 h-2 rounded-full bg-emerald-400" />
-              <span className="text-blue-300 font-semibold" title={walletSession.walletAddress}>
+              <span className="hidden sm:inline text-blue-300 font-semibold" title={walletSession.walletAddress}>
                 {walletSession.walletAddress.slice(0, 6)}...{walletSession.walletAddress.slice(-4)}
               </span>
-              <span className="text-slate-500">|</span>
+              <span className="hidden sm:inline text-slate-500">|</span>
               <span className="text-amber-300 text-[11px]" title="Daily Credit Allowance">
                 {creditBalance ? `${Math.round(creditBalance.remainingSeconds / 3600)}h left` : '8h left'}
               </span>
@@ -294,7 +294,7 @@ export function PetrosCityShell({
           {onLanguageChange && (
             <button
               onClick={() => onLanguageChange(isFa ? 'en' : 'fa')}
-              className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 border border-slate-700 transition-all cursor-pointer"
+              className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 border border-slate-700 transition-all cursor-pointer whitespace-nowrap shrink-0"
             >
               {isFa ? 'EN' : 'فا'}
             </button>
@@ -304,7 +304,7 @@ export function PetrosCityShell({
           {onToggleLegacy && (
             <button
               onClick={onToggleLegacy}
-              className="text-[11px] text-slate-400 hover:text-slate-200 underline transition-all cursor-pointer"
+              className="text-[11px] text-slate-400 hover:text-slate-200 underline transition-all cursor-pointer whitespace-nowrap shrink-0"
               title="Switch to classic view"
             >
               Legacy

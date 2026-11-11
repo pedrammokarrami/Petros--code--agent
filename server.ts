@@ -198,6 +198,7 @@ export function processUserPrompt(prompt: string): string {
 
 import { createYadowRouter } from "./server/routes/yadow";
 import express, { Request, Response } from 'express';
+import { createServer as createHttpServer } from 'node:http';
 import path from 'path';
 import fs from 'fs';
 import * as child_process from 'child_process';
@@ -4022,10 +4023,19 @@ async function startServer() {
   // SPA HTML fallback for GET requests.
   try { (app as any).use(createYadowRouter()); } catch(e) { console.error("Yadow mount error:", e); }
 
+  // Create the HTTP server up-front: Vite needs its instance to attach the HMR
+  // websocket to this same port. In middleware mode without an explicit
+  // `hmr.server`, Vite opens a standalone listener on :24678, which never gets
+  // proxied to the browser and leaves the page without hot reload.
+  const httpServer = createHttpServer(app);
+
   if (process.env.NODE_ENV !== 'production') {
     const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      server: {
+        middlewareMode: true,
+        hmr: { server: httpServer },
+      },
       appType: 'spa',
     });
     app.use(vite.middlewares);
@@ -4048,7 +4058,7 @@ async function startServer() {
 
 
 
-const httpServer = app.listen(PORT, BIND_HOST, () => {
+httpServer.listen(PORT, BIND_HOST, () => {
     console.log(`CODGAR Server running on http://${BIND_HOST}:${PORT}`);
     // Laya Router: REAL gateway — models are reached only through routers.
     try {

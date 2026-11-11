@@ -208,6 +208,8 @@ import dotenv from 'dotenv';
 
 import { AgentRuntime } from './server/agentRuntime';
 import { KeyManager } from './server/keyManager';
+import petrosFeedsRouter from './server/routes/petrosFeeds';
+import petrosAiRouter from './server/routes/petrosAi';
 import { GaifDevRouter } from './server/gaifRouter';
 import { OmniRouterWorker } from './server/workers/omniRouter';
 import { ClaudeCodeTerminal } from './server/claudeCodeTerminal';
@@ -385,6 +387,9 @@ app.post('/api/mcp/status', async (req: Request, res: Response) => {
     res.status(500).json({ success: false, error: err?.message });
   }
 });
+
+app.use('/api/petros/ai', petrosAiRouter);
+app.use('/api/petros', petrosFeedsRouter);
 
 app.get('/api/health', (req: Request, res: Response) => {
   const keyStatus = KeyManager.getInstance().getStatus();

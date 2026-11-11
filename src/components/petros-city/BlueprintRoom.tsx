@@ -108,11 +108,20 @@ export function BlueprintRoom({ roomId, isFa = false }: Props) {
     }
   }, [activeAgent, input, isFa, label, room, thinking]);
 
+  // The gateway owns the real quota; mirror the counts it reports so the HUD is not stale.
+  const [serverQuota, setServerQuota] = useState<Record<string, { used: number; limit: number | null }>>({});
+
   const runProbe = useCallback(async (feedId: string) => {
     const probe = FEED_PROBES[feedId];
     if (!probe) return;
     setFeedStatus((prev) => ({ ...prev, [feedId]: { state: 'loading' } }));
     const result = await callFeed(probe.path, { method: probe.method, body: probe.body });
+    if (result.quota) {
+      setServerQuota((prev) => ({
+        ...prev,
+        [feedId]: { used: result.quota!.used, limit: result.quota!.limit },
+      }));
+    }
     setFeedStatus((prev) => ({
       ...prev,
       [feedId]: result.ok
@@ -272,12 +281,15 @@ export function BlueprintRoom({ roomId, isFa = false }: Props) {
             const probe = FEED_PROBES[feed.id];
             const status = feedStatus[feed.id] ?? { state: 'idle' as const };
             const quota = feedQuota.status(feed.id);
+            const live = serverQuota[feed.id];
+            const used = live ? live.used : quota.used;
+            const limit = live ? live.limit : quota.limit;
             return (
               <div key={feed.id} className="rounded-lg border border-slate-800 bg-slate-950/50 p-2.5">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-xs text-slate-200">{feed.label}</span>
                   <span className="font-mono text-[10px] text-slate-500">
-                    {quota.limit === null ? '∞' : `${quota.used}/${quota.limit}`}
+                    {limit === null ? '∞' : `${used}/${limit}`}
                   </span>
                 </div>
                 <p className="text-[10px] text-slate-500 mt-1">{label(feed.description)}</p>

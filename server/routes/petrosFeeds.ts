@@ -101,7 +101,13 @@ async function proxy(res: Response, options: ProxyOptions): Promise<void> {
   const key = cacheKey(options.url, options.cacheBody);
   const hit = cached(key);
   if (hit) {
-    res.status(hit.status).json({ success: true, cached: true, feed: spec.id, data: hit.body });
+    res.status(hit.status).json({
+      success: true,
+      cached: true,
+      feed: spec.id,
+      quota: guard.status(spec.id),
+      data: hit.body,
+    });
     return;
   }
 

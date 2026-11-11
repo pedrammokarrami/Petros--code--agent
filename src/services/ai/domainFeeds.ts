@@ -7,6 +7,12 @@
  * the room UI can render without try/catch sprawl.
  */
 
+export interface FeedQuotaSnapshot {
+  feedId?: string;
+  used: number;
+  limit: number | null;
+}
+
 export interface FeedResult<T = unknown> {
   ok: boolean;
   feed: string;
@@ -14,6 +20,8 @@ export interface FeedResult<T = unknown> {
   error?: string;
   cached?: boolean;
   retryAfterMs?: number;
+  /** Server-side consumption for this feed, so the HUD can show real counts. */
+  quota?: FeedQuotaSnapshot;
   attempts: number;
 }
 
@@ -58,7 +66,15 @@ export async function callFeed<T = unknown>(
         signal: controller.signal,
       });
       const payload = (await res.json().catch(() => null)) as
-        | { success?: boolean; feed?: string; data?: T; error?: string; cached?: boolean; retryAfterMs?: number }
+        | {
+            success?: boolean;
+            feed?: string;
+            data?: T;
+            error?: string;
+            cached?: boolean;
+            retryAfterMs?: number;
+            quota?: FeedQuotaSnapshot;
+          }
         | null;
 
       if (res.ok && payload?.success !== false) {
@@ -67,6 +83,7 @@ export async function callFeed<T = unknown>(
           feed: payload?.feed ?? 'unknown',
           data: payload?.data as T,
           cached: payload?.cached,
+          quota: payload?.quota,
           attempts: attempt,
         };
       }
